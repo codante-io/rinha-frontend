@@ -85,7 +85,7 @@ Pronto! Boa sorte, e que vença o melhor!
 
 ## Prazo
 
-Aceitaremos submissões até o dia 10/11/2023 às 23:59
+Aceitaremos submissões até o dia 31/10/2023 às 23:59
 
 ## Premiação
 
