@@ -10,20 +10,31 @@ Criar uma **"JSON Tree Viewer"**: Um visualizador de JSON que roda _sem backend_
 
 O sistema deve focar em ser capaz de exibir o maior JSON possível. O "usuário" poderá carregar o arquivo JSON que quiser, e ser capaz de visualizá-lo em forma de árvore conforme o layout: [VER O LAYOUT NO FIGMA](https://www.figma.com/file/DHYB13ESevMMip2Nx8skjf/Rinha-de-Front-end).
 
-Vamos disponibilizar uma pasta no Drive com os arquivos de testes. Há alguns bem pequenos, outros enormes para a proposta. O layout diz respeito apenas ao output estático, e não versará sobre o comportamento de navegação do JSON que você carregar. Portanto, você é livre pra aplicar o comportamento e técnica que achar melhor para a navegação da sua tree view: paginação, infinite scrolling, lazy loading, vdom, windowing... E é aqui que começa a rinha: sua aplicação deve buscar carregar o maior arquivo possível dessa pasta. Boa sorte!
+Vamos disponibilizar uma pasta no Drive com os arquivos de testes. Há alguns bem pequenos, outros enormes para a proposta. O layout diz respeito apenas ao output estático, e não versará sobre o comportamento de navegação do JSON que você carregar. Portanto, você é livre pra aplicar o comportamento e técnica que achar melhor para a navegação da sua tree view: paginação, infinite scrolling, lazy loading, vdom, windowing... E é aqui que começa a rinha: sua aplicação deve buscar carregar o maior arquivo possível dessa pasta. Você não precisa cumprir todos os critérios para entregar a sua aplicação. Faça o seu melhor, aprenda e divirta-se.
 
+Boa sorte!
 
-## Especificações
+## Regras e Especificações
 
-Você não precisa cumprir todos os critérios para entregar a sua aplicação. Faça o seu melhor, aprenda e divirta-se. Abaixo então os critérios de acordo com o peso de cada um.
+Em linhas simples, o objetivo final da Rinha de Frontend é carregar, de forma correta, o maior número de arquivos JSON possível (dos 9 arquivos disponibilizados por nós [aqui nesta pasta](https://drive.google.com/drive/folders/1oO0AoBQukdF3_DxRYn1di7O4Iiqom1wJ)). A ideia é começar do mais fácil ao mais complicado. O menor arquivo JSON possui apenas 98 _bytes_, enquanto o maior arquivo possui _181 megabytes_
 
-1. **Correctness**: Esse é o critério principal e o único que é requisito de exclusão: A aplicação deve funcionar. Um JSON deve poder ser carregado e exibido conforme demonstrado no Layout (não necessarimanete precisa ser o maior JSON, mas ao menos alguns deles). `PESO: 50`.
+### Colocação Final dos Projetos
 
-2. **Performance**: Sua aplicação deve buscar o maior nível de fluidez, quanto mais rápida e robusta, melhor pra você. Aplicações com performance instável (as vezes quebra, as vezes vai, as vezes trava) não terão os pontos desse critério. `PESO: 25`.
+No momento em que você submeter seu projeto, você deverá também nos dizer qual foi o maior arquivo que a sua aplicação conseguiu carregar corretamente. Nós vamos fazer o _ranking_ de acordo com os projetos que carregaram os maiores arquivos.
 
-3. **Acessibilidade**: Sua aplicação deverá ser o mais acessível que você puder (ideal que esteja completamente acessível). Deve ser possível navegar na sua tree view de maneira acessivel. `PESO: 25`.
+Dessa forma, se apenas 1 projeto conseguiu carregar o maior arquivo (`giant.json`), esse projeto será o vencedor. Isso irá acontecer sequencialmente até que tenhamos os XX primeiros colocados rankeados.
 
-Os critérios serão avaliados de acordo com uma regra de tudo ou nada: ou tem ou não tem. Se tiver, o peso do critério será somado ao score. Se não tiver, 0 será somado ao score.
+Caso, ao final, existam mais de um projeto que conseguiram carregar os mesmos arquivos, vamos então para os critérios de desempate.
+
+### Critérios de Desempate
+
+1. **Correctness**: Esse é o critério principal: A aplicação deve funcionar. Um JSON deve poder ser carregado e exibido conforme demonstrado no Layout (não necessariamente precisa ser o maior JSON, mas ao menos alguns deles). Além disso, aqui também vamos analisar como sua aplicação se comporta no caso de JSONs inválidos.
+
+2. **Performance**: Sua aplicação deve buscar o maior nível de fluidez, quanto mais rápida e robusta, melhor pra você. Aplicações com performance instável (as vezes quebra, as vezes vai, as vezes trava) não terão os pontos desse critério. Vamos testar de forma manualmente a performance utilizando os mesmos recursos para os diferentes projetos.
+
+3. **Acessibilidade**: Sua aplicação deverá ser o mais acessível que você puder (ideal que esteja completamente acessível). Deve ser possível navegar na sua _tree view_ de maneira acessível.
+
+De acordo com esses três itens acima, iremos realizar os desempates até que consigamos as X primeiras colocações. Para todas as outras colocações não iremos realizar desempates.  
 
 ### Análise
 
@@ -33,6 +44,11 @@ Para as análises utilizaremos:
 - Core Web Vitals
 - Lighthouse Results
 - Accessibility Checks
+- Outras métricas a serem consideradas futuramente pela organização
+
+### Casos Não Previstos
+
+Caso haja alguma situação imprevista, o time organizador se reserva o direito de decidir, caso a caso os casos não previstos, sem possibilidade de recurso (lembrando que o objetivo principal da rinha é ser um jogo 😄).
 
 ## Stack
 
