@@ -22,7 +22,7 @@ Em linhas simples, o objetivo final da Rinha de Frontend é carregar, de forma c
 
 No momento em que você submeter seu projeto, você deverá também nos dizer qual foi o maior arquivo que a sua aplicação conseguiu carregar corretamente. Nós vamos fazer o _ranking_ de acordo com os projetos que carregaram os maiores arquivos.
 
-Dessa forma, se apenas 1 projeto conseguiu carregar o maior arquivo (`giant.json`), esse projeto será o vencedor. Isso irá acontecer sequencialmente até que tenhamos os XX primeiros colocados rankeados.
+Dessa forma, se apenas 1 projeto conseguiu carregar o maior arquivo (`giant.json`), esse projeto será o vencedor. Isso irá acontecer sequencialmente até que tenhamos os 10 primeiros colocados rankeados.
 
 Caso, ao final, existam mais de um projeto que conseguiram carregar os mesmos arquivos, vamos então para os critérios de desempate.
 
@@ -30,7 +30,7 @@ Caso, ao final, existam mais de um projeto que conseguiram carregar os mesmos ar
 
 1. **Correctness**: Esse é o critério principal: A aplicação deve funcionar. Um JSON deve poder ser carregado e exibido conforme demonstrado no Layout (não necessariamente precisa ser o maior JSON, mas ao menos alguns deles). Além disso, aqui também vamos analisar como sua aplicação se comporta no caso de JSONs inválidos.
 
-2. **Performance**: Sua aplicação deve buscar o maior nível de fluidez, quanto mais rápida e robusta, melhor pra você. Aplicações com performance instável (as vezes quebra, as vezes vai, as vezes trava) não terão os pontos desse critério. Vamos testar de forma manualmente a performance utilizando os mesmos recursos para os diferentes projetos.
+2. **Performance**: Sua aplicação deve buscar o maior nível de fluidez, quanto mais rápida e robusta, melhor pra você. Aplicações com performance instável (as vezes quebra, as vezes vai, as vezes trava) não terão os pontos desse critério. Vamos testar de forma manual a performance utilizando os mesmos recursos para os diferentes projetos.
 
 3. **Acessibilidade**: Sua aplicação deverá ser o mais acessível que você puder (ideal que esteja completamente acessível). Deve ser possível navegar na sua _tree view_ de maneira acessível.
 
