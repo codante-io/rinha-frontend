@@ -12,7 +12,6 @@ O sistema deve focar em ser capaz de exibir o maior JSON possível. O "usuário"
 
 Vamos disponibilizar uma pasta no Drive com os arquivos de testes. Há alguns bem pequenos, outros enormes para a proposta. O layout diz respeito apenas ao output estático, e não versará sobre o comportamento de navegação do JSON que você carregar. Portanto, você é livre pra aplicar o comportamento e técnica que achar melhor para a navegação da sua tree view: paginação, infinite scrolling, lazy loading, vdom, windowing... E é aqui que começa a rinha: sua aplicação deve buscar carregar o maior arquivo possível dessa pasta. Boa sorte!
 
-<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FDHYB13ESevMMip2Nx8skjf%2FRinha-de-Front-end%3Ftype%3Ddesign%26node-id%3D0%253A1%26mode%3Ddesign%26t%3DeRPBFABCToFB5EE9-1" allowfullscreen></iframe>
 
 ## Especificações
 
