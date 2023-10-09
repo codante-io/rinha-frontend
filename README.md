@@ -85,6 +85,10 @@ Pronto! Boa sorte, e que vença o melhor!
 
 Aceitaremos submissões até o dia 10/11/2023 às 23:59
 
+## Premiação
+
+As 5 melhores soluções serão premiadas com um gift card da Kabum. 1º lugar: R$ 200,00; 2º lugar: R$ 150,00; 3º lugar: R$ 100,00; 4º lugar: R$ 50,00; 5º lugar: R$ 50,00.
+
 ## Dúvidas, ajuda e sugestões
 
 Para dúvidas, pedidos de ajuda ou sugestões, abra uma ISSUE nesse repositório prefixada por `[DÚVIDA]`, `[AJUDA]` ou `[SUGESTÃO]`.
