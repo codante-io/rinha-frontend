@@ -10,7 +10,7 @@ Criar uma **"JSON Tree Viewer"**: Um visualizador de JSON que roda _sem backend_
 
 O sistema deve focar em ser capaz de exibir o maior JSON possível. O "usuário" poderá carregar o arquivo JSON que quiser, e ser capaz de visualizá-lo em forma de árvore conforme o layout: [VER O LAYOUT NO FIGMA](https://www.figma.com/file/DHYB13ESevMMip2Nx8skjf/Rinha-de-Front-end).
 
-Vamos disponibilizar uma pasta no Drive com os arquivos de testes. Há alguns bem pequenos, outros enormes para a proposta. O layout diz respeito apenas ao output estático, e não versará sobre o comportamento de navegação do JSON que você carregar. Portanto, você é livre pra aplicar o comportamento e técnica que achar melhor para a navegação da sua tree view: paginação, infinite scrolling, lazy loading, vdom, windowing... E é aqui que começa a rinha: sua aplicação deve buscar carregar o maior arquivo possível dessa pasta. Você não precisa cumprir todos os critérios para entregar a sua aplicação. Faça o seu melhor, aprenda e divirta-se.
+Vamos disponibilizar uma [pasta no Drive](https://drive.google.com/drive/folders/1oO0AoBQukdF3_DxRYn1di7O4Iiqom1wJ) com os arquivos de testes. Há alguns bem pequenos, outros enormes para a proposta. O layout diz respeito apenas ao output estático, e não versará sobre o comportamento de navegação do JSON que você carregar. Portanto, você é livre pra aplicar o comportamento e técnica que achar melhor para a navegação da sua tree view: paginação, infinite scrolling, lazy loading, vdom, windowing... E é aqui que começa a rinha: sua aplicação deve buscar carregar o maior arquivo possível dessa pasta. Você não precisa cumprir todos os critérios para entregar a sua aplicação. Faça o seu melhor, aprenda e divirta-se.
 
 Boa sorte!
 
@@ -57,6 +57,8 @@ Você tem liberdade para escolher qualquer **stack**, **lib** ou **framework**. 
 Além disso, sua aplicação deve ser original e não pode ser uma cópia de outra nem usar libs que solucionem completamente o desafio proposto.
 
 ## Arquivos de Teste
+
+[Download dos arquivos de teste](https://drive.google.com/drive/folders/1oO0AoBQukdF3_DxRYn1di7O4Iiqom1wJ)
 
 Sua aplicação deve ser capaz de rodar o máximo possível de arquivos de teste na pasta disponibilizada, carregando 1 por vez. Os arquivos disponíveis são:
 
