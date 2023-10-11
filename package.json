@@ -1,0 +1,25 @@
+{
+  "name": "rinha-frontend",
+  "version": "1.0.0",
+  "description": "Este é o repositório da Rinha de Frontend. Esta é uma brincadeira e um desafio de código inspirada pela _\"Rinha de Backend\"_, uma iniciativa criada por Francisco Franceschi.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "start": "next start",
+    "build": "next build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^13.5.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.8.4",
+    "@types/react": "18.2.28",
+    "typescript": "5.2.2"
+  }
+}
