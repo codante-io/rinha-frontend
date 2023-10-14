@@ -1,7 +1,11 @@
 body {
-  background-color: #f00000;
+  background-color: #DCDCDC;
+  padding: 10px;
 }
 
 #content {
   background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
 }

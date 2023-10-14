@@ -1,9 +1,16 @@
 const content = document.getElementById("content");
 
-fetch("test.json")
-.then(res => res.text())
+let text = "";
+
+function printJson(text) {
+  console.log(text);
+}
+
+  fetch("./small.json")
+.then(res => res.json())
   .then(data => {
-    content.innerHTML = data;
-    console.log(`Here is: ${data}`)
+    text = JSON.stringify(data, null, "*");
+    content.innerText = text;
+    printJson(text);
   })
 .catch((err => console.error(err)))
