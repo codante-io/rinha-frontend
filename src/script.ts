@@ -1,0 +1,26 @@
+const importButton = document.getElementById('import') as HTMLButtonElement | null;
+const resultArea = document.getElementById('result') as HTMLTextAreaElement | null;
+const filesInput = document.getElementById('selectFiles') as HTMLInputElement | null;
+
+if (importButton != null && resultArea !== null && filesInput !== null) {
+  importButton.onclick = function () {
+    var files = filesInput.files;
+    console.log(files);
+    if (!files || files.length <= 0) {
+      return false;
+    }
+
+    var fileReader = new FileReader();
+
+    fileReader.onload = function (e) {
+      console.log(e);
+      if (e.target) {
+        var result = JSON.parse(e.target.result as string);
+        var formatted = JSON.stringify(result, null, 2);
+        resultArea.value = formatted;
+      }
+    }
+
+    !!files.item(0) && fileReader.readAsText(files.item(0) as Blob);
+  };
+}

@@ -1,0 +1,24 @@
+{
+  "name": "rinha-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenyarodriguess/rinha-frontend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kenyarodriguess/rinha-frontend/issues"
+  },
+  "homepage": "https://github.com/kenyarodriguess/rinha-frontend#readme",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
