@@ -1,0 +1,28 @@
+#content, #result {
+    display: block;
+    margin: auto;
+    max-height: 500px;
+    max-width: 500px;
+    align-content: center;
+}
+
+h1, h2, p {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+label, #home {
+    padding: 20px 10px;
+    width: 200px;
+    background-color: #333;
+    color: #FFF;
+    text-transform: uppercase;
+    text-align: center;
+    display: block;
+    margin-top: 10px;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+}
