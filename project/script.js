@@ -1,4 +1,4 @@
-const content = document.getElementById("content");
+const tree = document.getElementById("tree");
 
 function splitJson(text) {
   const array = text.split("\n");
@@ -6,8 +6,6 @@ function splitJson(text) {
 }
 
 function jsonToTree(arr) {
-  content.innerHTML += '<ul class="tree">'
-
   let str = "";
 
   arr.forEach(line => {
@@ -15,11 +13,8 @@ function jsonToTree(arr) {
     if(line[line.length - 1] == '{') str += '*';
     else if(line[line.length - 1] == '}') str = str.substring(0, str.length - 1)
 
-    content.innerHTML += `<li>${str}${line}</li>`
+      tree.innerHTML += `<li>${str}${line}</li>`
   });
-    
-  content.innerHTML += "</ul>"
-
 }
 
   fetch("./small.json")
