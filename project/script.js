@@ -10,10 +10,19 @@ function jsonToTree(arr) {
 
   arr.forEach(line => {
     console.log(line);
-    if(line[line.length - 1] == '{') str += '*';
-    else if(line[line.length - 1] == '}') str = str.substring(0, str.length - 1)
+    if(line[line.length - 1] == '{' ||
+        line[line.length - 1] == '[') {
+    
+      str += '&nbsp;';
+    }
 
-      tree.innerHTML += `<li>${str}${line}</li>`
+    else if(line[line.length - 1] == '}' ||
+            line[line.length - 1] == ']') {
+    
+      str = str.substring(0, str.length - 6)
+    }
+
+    tree.innerHTML += `<li>${str}${line}</li>`
   });
 }
 
