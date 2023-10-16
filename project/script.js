@@ -1,16 +1,16 @@
 const content = document.getElementById("content");
 
-let text = "";
-
-function printJson(text) {
-  console.log(text);
+function splitJson(text) {
+  const array = text.split("\n");
+  return array;
 }
 
   fetch("./small.json")
 .then(res => res.json())
   .then(data => {
-    text = JSON.stringify(data, null, "*");
-    content.innerText = text;
-    printJson(text);
+    text = JSON.stringify(data, null, " ");
+    let ret = splitJson(text);
+
+    console.log(ret);
   })
 .catch((err => console.error(err)))
