@@ -7,22 +7,35 @@ function splitJson(text) {
 
 function jsonToTree(arr) {
   let str = "";
+  
+  let element = "li";
+  let mom = tree;
 
   arr.forEach(line => {
+
+    if(line[line.length - 1] === '}' ||
+       line[line.length - 1] === ']' ||
+       line[line.length - 2] === '}' ||
+       line[line.length - 2] === ']' ) {
+
+      mom = mom.parentNode;
+    }
+
+    var el = document.createElement(element)
+    el.appendChild(document.createTextNode(`${line}`))
+
+    mom.appendChild(el);
+    if(element == "ul") {
+      mom = el;
+      element = "li";
+    }
+
     console.log(line);
-    if(line[line.length - 1] == '{' ||
-        line[line.length - 1] == '[') {
+    if(line[line.length - 1] === '{' ||
+        line[line.length - 1] === '[') {
     
-      str += '&nbsp;';
+      element = "ul";
     }
-
-    else if(line[line.length - 1] == '}' ||
-            line[line.length - 1] == ']') {
-    
-      str = str.substring(0, str.length - 6)
-    }
-
-    tree.innerHTML += `<li>${str}${line}</li>`
   });
 }
 
