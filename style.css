@@ -17,6 +17,7 @@ h1 {
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+    margin: 0;
 }
 
 #description {
@@ -24,6 +25,7 @@ h1 {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    margin: 0;
 }
 
 input[type="file"] {
