@@ -6,8 +6,9 @@ function splitJson(text) {
 }
 
 function jsonToTree(arr) {
-  let element = "li";
+  let element = "ul";
   let mom = tree;
+  let add_class = false;
 
   arr.forEach(line => {
 
@@ -19,25 +20,34 @@ function jsonToTree(arr) {
       mom = mom.parentNode;
     }
 
-    var el = document.createElement(element)
-    el.appendChild(document.createTextNode(`${line}`))
-
-    mom.appendChild(el);
-    if(element == "ul") {
-      mom = el;
-      element = "li";
-    }
-
-    console.log(line);
     if(line[line.length - 1] === '{' ||
-        line[line.length - 1] === '[') {
+       line[line.length - 1] === '[') {
     
       element = "ul";
+      let ne = document.createElement('ul');
+      mom.appendChild(ne)
+      mom = ne
+
+      add_class = true;
     }
-  });
+
+    var el = document.createElement('li')
+
+    if(add_class) {
+      $(el).addClass('test')
+      add_class = false;
+    }
+
+    el.appendChild(document.createTextNode(`${line}`))
+    mom.appendChild(el);
+
+    if(element == "ul")
+      element = "li";
+
+    });
 }
 
-  fetch("./verysmall.json")
+  fetch("./small.json")
 .then(res => res.json())
   .then(data => {
     text = JSON.stringify(data, null, " ");
@@ -46,7 +56,11 @@ function jsonToTree(arr) {
   })
 .catch((err => console.error(err)))
 
-var uls = document.getElementsByTagName('ul')
-uls = uls[0].childNodes
+jQuery(() => {
+  
+  $(document).on('click' ,'li.test', function(e) {
+    alert("Clicou")
 
-console.log(uls)
+
+  })
+})
