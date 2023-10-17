@@ -90,3 +90,5 @@ As 5 melhores soluções serão premiadas com um gift card da Kabum. 1º lugar: 
 ## Dúvidas, ajuda e sugestões
 
 Para dúvidas, pedidos de ajuda ou sugestões, abra uma ISSUE nesse repositório prefixada por `[DÚVIDA]`, `[AJUDA]` ou `[SUGESTÃO]`.
+
+Thanks for visiting :smile:
