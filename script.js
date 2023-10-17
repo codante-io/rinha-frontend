@@ -25,7 +25,7 @@ if (upload) {
 
                 reader.addEventListener('load', async function () {
                     document.getElementById('loading').style.display = 'none';
-                    document.getElementById('json-tree-viewer').style.borderLeft = '1px solid green';
+                    document.getElementById('json-tree-viewer').style.borderLeft = '1px solid #BFBFBF';
 
                     try {
                         await loadJSON(JSON.parse(reader.result));        
@@ -43,8 +43,8 @@ if (upload) {
 
 async function loadJSON(jsonData) {
     if (upload.files[0].name === 'giant.json') {
-        document.getElementById('json-tree-viewer').innerText = JSON.stringify(jsonData, null, 4).slice(0, 39164872);
+        document.getElementById('json-tree-viewer').innerText = JSON.stringify(jsonData, null, 4).slice(0, 39164872).replace(/"/g, '');
     } else {
-        document.getElementById('json-tree-viewer').innerText = JSON.stringify(jsonData, null, 4);
+        document.getElementById('json-tree-viewer').innerText = JSON.stringify(jsonData, null, 4).replace(/"/g, '');
     }
 }
