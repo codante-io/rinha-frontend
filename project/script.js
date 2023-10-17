@@ -6,8 +6,6 @@ function splitJson(text) {
 }
 
 function jsonToTree(arr) {
-  let str = "";
-  
   let element = "li";
   let mom = tree;
 
@@ -39,7 +37,7 @@ function jsonToTree(arr) {
   });
 }
 
-  fetch("./small.json")
+  fetch("./verysmall.json")
 .then(res => res.json())
   .then(data => {
     text = JSON.stringify(data, null, " ");
@@ -47,3 +45,8 @@ function jsonToTree(arr) {
     jsonToTree(ret);
   })
 .catch((err => console.error(err)))
+
+var uls = document.getElementsByTagName('ul')
+uls = uls[0].childNodes
+
+console.log(uls)
