@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+      * {
+        font-family: Inter, sans-serif;
+      }
+    </style>
+    <script>
+      function onError(e) {
+        console.error(e);
+      }
+    </script>
+
+    <!-- CSS Main File -->
+  </head>
+  <body style="height: 100vh">
+    <div
+      id="index"
+      style="
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <h1 style="font-weight: 700; margin-bottom: 24px">JSON Tree Viewer</h1>
+      <p style="font-weight: 700; margin-bottom: 24px">
+        Simple JSON Viewer that runs completely on-client. No data exchange
+      </p>
+      <input
+        id="arquivo"
+        name="arquivo"
+        type="file"
+        accept="application/json"
+        style="display: none"
+      />
+      <button
+        onclick="escolherArquivo()"
+        style="border-radius: 5px; border: 1px solid #000000; cursor: pointer"
+      >
+        Load JSON
+      </button>
+    </div>
+
+    <!-- <canvas id="tree" width="500" height="500"></canvas> -->
+    <div id="output"></div>
+    <script>
+      function escolherArquivo() {
+        document.getElementById("arquivo").click();
+      }
+    </script>
+    <script type="module" src="./assets/js/wasmtest.js"></script>
+    <script type="module" src="./assets/js/tests-with-dom.js"></script>
+    <script type="module" src="./assets/js/handleFiles.js"></script>
+  </body>
+</html>
