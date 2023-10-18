@@ -47,7 +47,7 @@ function jsonToTree(arr) {
     });
 }
 
-  fetch("./small.json")
+  fetch("jsons/large.json")
 .then(res => res.json())
   .then(data => {
     text = JSON.stringify(data, null, " ");
