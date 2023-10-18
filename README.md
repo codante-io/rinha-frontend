@@ -62,15 +62,15 @@ Além disso, sua aplicação deve ser original e não pode ser uma cópia de out
 
 Sua aplicação deve ser capaz de rodar o máximo possível de arquivos de teste na pasta disponibilizada, carregando 1 por vez. Os arquivos disponíveis são:
 
-- alltypes.json
-- verysmall.json
-- small.json
-- pokedex.json
-- startwitharray.json
-- large.json
-- giant.json
-- invalid.json
-- nullreference.json
+- verysmall.json - 98 bytes
+- alltypes.json - 804 bytes
+- small.json - 1 KB
+- invalid.json - 1 KB
+- nullreference.json - 21 KB
+- pokedex.json - 281 KB
+- startwitharray.json - 1,6 MB
+- large.json - 24,9 MB
+- giant.json - 181 MB
 
 ## Submeter seu projeto
 
