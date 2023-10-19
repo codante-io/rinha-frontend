@@ -1,10 +1,5 @@
 const tree = document.getElementById("tree");
 
-function splitJson(text) {
-  const array = text.split("\n");
-  return array;
-}
-
 function jsonToTree(arr) {
   let element = "ul";
   let mom = tree;
@@ -47,25 +42,29 @@ function jsonToTree(arr) {
     });
 }
 
-  fetch("jsons/large.json")
-.then(res => res.json())
-  .then(data => {
-    text = JSON.stringify(data, null, " ");
-    let ret = splitJson(text);
-    jsonToTree(ret);
-  })
-.catch((err => console.error(err)))
-
 jQuery(() => {
   
   $(document).on('click' ,'li.test', function(e) {
     alert("Clicou")
   })
 
-  const reader = document.getElementById("input")
-  reader.addEventListener("change", handle, false);
+  const input = document.getElementById("input")
+  input.addEventListener("change", handle);
 
   function handle() {
-    console.log("Works")
+    let file = input.files[0]
+
+    let reader = new FileReader()
+    reader.onload = (e) => {
+      const json = JSON.stringify(JSON.parse(e.target.result), null, 2)
+      const lines = json.split("\n")
+
+      console.log(json)
+      console.log("worked")
+      console.log(lines)
+
+      jsonToTree(lines)
+    }
+    reader.readAsText(file, "UTF-8")
   }
 })
