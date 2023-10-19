@@ -1,0 +1,85 @@
+.App {
+  text-align: center;
+  font-weight: 400;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: black;
+}
+
+.fileInput {
+  margin-left: 120px;
+  color: transparent;
+}
+.fileInput::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.fileInput::before {
+  content: 'Load JSON';
+  color: black;
+  display: inline-block;
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  cursor: pointer;
+  text-shadow: 1px 1px #fff;
+  font-weight: 700;
+  font-size: 16px;
+  font-family: Inter;
+
+}
+.fileInput:hover::before {
+  border-color: black;
+}
+
+.fileInput:active {
+  outline: 0;
+}
+
+.fileInput:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9); 
+}
+
+.errorWarning {
+  font-weight: 500;
+  font-size: 16px;
+  color: #BF0E0E;
+}
+
+.contentBox {
+  text-align: left;
+  > h3 {
+    cursor: pointer;
+    text-align: left;
+  }
+  > h3:hover {
+    color: #BF0E0E;
+  }
+
+  > div {
+    font-size: 12px;
+  }
+}
+
+.dataContainer {
+  text-align: left;
+  width: 70vw;
+  height: 90vh;
+  overflow: auto;
+}
+
+.dataBox {
+  border-radius: 4px;
+  padding: 10px;
+  text-align: left;
+  background-color: #fff;
+  font-weight: 400;
+  font-size: 16px;
+}
+
