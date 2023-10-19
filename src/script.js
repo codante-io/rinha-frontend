@@ -60,7 +60,12 @@ jQuery(() => {
   
   $(document).on('click' ,'li.test', function(e) {
     alert("Clicou")
-
-
   })
+
+  const reader = document.getElementById("input")
+  reader.addEventListener("change", handle, false);
+
+  function handle() {
+    console.log("Works")
+  }
 })
