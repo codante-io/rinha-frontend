@@ -2,27 +2,14 @@
   "name": "brgaming-front",
   "version": "1.0.0",
   "description": "TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project.",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "parcel ./src/index.html",
-    "prebuild": "npx rimraf build",
-    "build": "parcel build --public-url ./ ./src/index.html --experimental-scope-hoisting --out-dir build"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://henrique_massareli@bitbucket.org/brgaming/brgaming-front.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://bitbucket.org/brgaming/brgaming-front/issues"
-  },
-  "homepage": "https://bitbucket.org/brgaming/brgaming-front#readme",
   "devDependencies": {
-    "parcel": "^2.10.0"
+    "vite": "^4.4.5"
   },
-  "dependencies": {
-    "fast-json": "^3.0.0"
-  }
+  "dependencies": {}
 }

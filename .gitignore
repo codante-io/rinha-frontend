@@ -11,10 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
-build
 
 # Editor directories and files
-.parcel-cache
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -24,3 +22,9 @@ build
 *.njsproj
 *.sln
 *.sw?
+*.env*
+!.env.example
+
+
+# Added by @jhordyess, erase if you want1
+.devcontainer
