@@ -1,8 +1,10 @@
-# Rinha de Frontend
+# [Rinha de Front-end](https://codante.io/rinha-frontend)
 
 Este é o repositório da Rinha de Frontend. Esta é uma brincadeira e um desafio de código inspirada pela _"Rinha de Backend"_, uma iniciativa criada por Francisco Franceschi.
 
 O desafio consiste em montar um sistema Frontend com a stack que você quiser, e estressá-lo de acordo com as especificações abaixo, simplesmente pra ver o que acontece. Quem tirar a melhor performance nos critérios aqui estabelecidos, vence.
+
+🔗 [Link para participar](https://codante.io/rinha-frontend)
 
 ## O Desafio
 
@@ -62,15 +64,15 @@ Além disso, sua aplicação deve ser original e não pode ser uma cópia de out
 
 Sua aplicação deve ser capaz de rodar o máximo possível de arquivos de teste na pasta disponibilizada, carregando 1 por vez. Os arquivos disponíveis são:
 
-- alltypes.json
-- verysmall.json
-- small.json
-- pokedex.json
-- startwitharray.json
-- large.json
-- giant.json
-- invalid.json
-- nullreference.json
+- verysmall.json - 98 bytes
+- alltypes.json - 804 bytes
+- small.json - 1 KB
+- invalid.json - 1 KB
+- nullreference.json - 21 KB
+- pokedex.json - 281 KB
+- startwitharray.json - 1,6 MB
+- large.json - 24,9 MB
+- giant.json - 181 MB
 
 ## Submeter seu projeto
 
