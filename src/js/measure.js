@@ -1,9 +1,11 @@
 export function measure(name) {
   const startTime = performance.now();
 
-  return () => {
-    const duration = performance.now() - startTime;
-    console.log(`${name}: ${duration}ms`);
+  return {
+    finish: () => {
+      const duration = performance.now() - startTime;
+      console.log(`${name}: ${duration}ms`);
+    },
   };
 }
 

@@ -19,37 +19,35 @@ document.addEventListener("DOMContentLoaded", function () {
       let first2Parts = await streamToText(fileContentStream);
 
       runAfterFramePaint(async () => {
-        openFirstChunks();
+        openFirstChunks.finish();
       });
       p.textContent = first2Parts;
-
       divLines.appendChild(p);
-
-      const buffer = await file.arrayBuffer();
-
-      //   console.log(".buffer()", bufferToText(buffer));
-
-      const fileSliceBlob = file.slice(0, file.length);
-      const fileSliceBlobStream = await fileSliceBlob.stream();
-
-      //   console.log(
-      //     ".slice() and .stream()",
-      //     await streamToText(fileSliceBlobStream)
-      //   );
     })();
   });
 
   const streamToText = async (blob) => {
-    const readableStream = await blob.getReader();
-    const chunk = await readableStream.read();
+    const readableStream = await blob.getReader({
+      mode: "byob",
+    });
 
-    return new TextDecoder("utf-8").decode(chunk.value);
+    while (true) {
+      const { done, value } = await readableStream.read(new Uint8Array(2000));
+
+      if (done) {
+        break;
+      }
+
+      const text = new TextDecoder().decode(value);
+      processChunkToDOM(text);
+    }
   };
 
-  const bufferToText = (buffer) => {
-    const bufferByteLength = buffer.byteLength;
-    const bufferUint8Array = new Uint8Array(buffer, 0, bufferByteLength);
+  const processChunkToDOM = (chunk) => {
+    let p = document.createElement("p");
 
-    return new TextDecoder().decode(bufferUint8Array);
+    p.textContent = chunk;
+
+    divLines.appendChild(p);
   };
 });
