@@ -5,36 +5,80 @@
 //     "empty": ""
 //   }
 // }
-/**
- * @param {string} text
- */
+import {
+  colonNode,
+  tabNode,
+  closeBracketNode,
+  openBracketNode,
+  breakNode,
+} from "./domgen/nodes.js";
+import {
+  createArrayKeyNode,
+  createKeyNode,
+  createSpanNode,
+  createStringNode,
+} from "./domgen/creators.js";
+
+let tabs = 0;
+let arrayCounters = [];
+let isAfterColon = false;
+let isInsideObject = false;
+
 export const lexer = (text) => {
   const tokens = [];
   let i = 0;
-  let tabs = 0;
 
   while (i < text.length) {
     const char = text[i];
     switch (char) {
       case "{":
-        parseOn("brace", "{");
+        isInsideObject = true;
+        parseOn("braceOpen");
+        if (arrayCounters.length > 0) {
+          parseOn("arrayKey", arrayCounters[arrayCounters.length - 1]++);
+        }
+        isAfterColon = false;
         i++;
         continue;
       case "}":
-        parseOn("brace", "}");
+        parseOn("braceClose");
+        i++;
+        continue;
+      case "[":
+        isInsideObject = false;
+        parseOn("bracketOpen");
+        arrayCounters.push(0);
+        isAfterColon = false;
+        i++;
+        continue;
+      case "]":
+        parseOn("bracketClose");
+        arrayCounters.pop();
         i++;
         continue;
       case ":":
-        parseOn("colon", ":");
+        parseOn("colon");
+        isAfterColon = true;
         i++;
         continue;
       case ",":
-        parseOn("comma", ",");
+        parseOn("comma"); // Does not parse comma character
+        isAfterColon = false;
         i++;
         continue;
       case '"':
         const [value, length] = readString(text, i + 1);
-        parseOn("string", value);
+
+        if (isAfterColon) {
+          parseOn("string", value);
+          isAfterColon = false;
+        } else if (!isInsideObject) {
+          parseOn("arrayKey", arrayCounters[arrayCounters.length - 1]++);
+
+          parseOn("arrayString", value);
+        } else {
+          parseOn("key", value);
+        }
         i += length + 1;
         continue;
       case " ":
@@ -43,7 +87,9 @@ export const lexer = (text) => {
         i++;
         continue;
       default:
-        i++;
+        const [value2, length2] = readValue(text, i);
+        parseOn("value", value2);
+        i += length2;
         continue;
     }
   }
@@ -51,52 +97,80 @@ export const lexer = (text) => {
 };
 
 const output = document.getElementById("output");
-const createOrangeNode = (text) => {
-  const node = document.createElement("span");
-  node.classList.add("orange");
-  node.innerText = text;
-  return node;
-};
-const commaNode = createOrangeNode(",");
-const openBraceNode = createOrangeNode("{");
-const closeBraceNode = createOrangeNode("}");
-const colonNode = createOrangeNode(":");
-
-const createClonableTextNode = () => {
-  const node = document.createElement("span");
-  node.classList.add("text");
-  return node;
-};
-const clonableTextNode = createClonableTextNode();
-const createTextNode = (text) => {
-  const node = clonableTextNode.cloneNode();
-  node.innerText = text;
-  return node;
-};
 
 const parseOn = (type, value) => {
   const when = {
-    comma(_) {
-      cloneAndAppend(commaNode);
+    braceOpen: (_) => {
+      cloneAndAppend(breakNode);
+      appendTabs(tabs);
     },
-    string(value) {
-      const node = createTextNode(value);
-      output.appendChild(node);
+    braceClose: (_) => {
+      cloneAndAppend(breakNode);
+      appendTabs(--tabs);
     },
-    brace(value) {
-      // TODO: Fazer cada brace separado
-      if (value === "{") {
-        cloneAndAppend(openBraceNode);
-      } else {
-        cloneAndAppend(closeBraceNode);
-      }
+    bracketOpen: (_) => {
+      cloneAndAppend(openBracketNode);
+      tabs++;
     },
-    colon(_) {
+    bracketClose: (_) => {
+      cloneAndAppend(breakNode);
+      appendTabs(--tabs);
+      cloneAndAppend(closeBracketNode);
+    },
+    colon: (_) => {
       cloneAndAppend(colonNode);
     },
+    comma: (_) => {
+      cloneAndAppend(breakNode);
+      appendTabs(tabs);
+    },
+    string(value) {
+      const node = createStringNode(`"${value}"`);
+      output.appendChild(node);
+    },
+    key(value) {
+      const node = createKeyNode(value);
+      output.appendChild(node);
+    },
+    value(value) {
+      const node = createSpanNode(value);
+      output.appendChild(node);
+    },
+    arrayKey(value) {
+      // example: ["glossary": {
+      let node;
+      if (isInsideObject) {
+        node = createArrayKeyNode(`${value}: \n`);
+        output.appendChild(node);
+        appendTabs(++tabs);
+      } else {
+        if (
+          arrayCounters.length > 0 &&
+          arrayCounters[arrayCounters.length - 1] == 1
+        ) {
+          cloneAndAppend(breakNode);
+          appendTabs(tabs);
+        }
+
+        node = createArrayKeyNode(`${value}: `);
+        output.appendChild(node);
+      }
+    },
+    arrayString(value) {
+      // example: ["title", "example glossary"]
+      const node = createStringNode(`"${value}"`);
+      output.appendChild(node);
+    },
+    // TODO: arrayValue [true, 12]
   };
 
   when[type](value);
+};
+
+const appendTabs = (tabs) => {
+  for (let i = 0; i < tabs; i++) {
+    cloneAndAppend(tabNode);
+  }
 };
 
 const cloneAndAppend = (node) => {
@@ -104,7 +178,7 @@ const cloneAndAppend = (node) => {
   output.appendChild(clone);
 };
 
-const readString = (text, i) => {
+function readString(text, i) {
   let value = "";
   let length = 0;
   while (i < text.length) {
@@ -116,4 +190,18 @@ const readString = (text, i) => {
     length++;
     i++;
   }
-};
+}
+
+function readValue(text, i) {
+  let value = "";
+  let length = 0;
+  while (i < text.length) {
+    const char = text[i];
+    if (char === "," || char === "}" || char === "]") {
+      return [value, length];
+    }
+    value += char;
+    length++;
+    i++;
+  }
+}

@@ -29,19 +29,19 @@ p.textContent = "Opa mano bora testar com 6 p";
 
 //72,75,68ms
 
-let medirCreateElement = measure("innerHTML");
+// let medirCreateElement = measure("innerHTML");
 
-document.addEventListener("DOMContentLoaded", function () {
-  for (let i = 0; i < 500000; i++) {
-    let p = document.createElement("p");
-    p.textContent = "Opa mano bora testar com 6 p";
-    document.body.appendChild(p);
-  }
+// document.addEventListener("DOMContentLoaded", function () {
+//   for (let i = 0; i < 500000; i++) {
+//     let p = document.createElement("p");
+//     p.textContent = "Opa mano bora testar com 6 p";
+//     document.body.appendChild(p);
+//   }
 
-  runAfterFramePaint(async () => {
-    medirCreateElement.finish();
-  });
-});
+//   runAfterFramePaint(async () => {
+//     medirCreateElement.finish();
+//   });
+// });
 
 // 79ms média
 

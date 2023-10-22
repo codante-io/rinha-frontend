@@ -1,18 +1,14 @@
 import { lexer } from "./generate-dom.js";
-import { measure } from "./measure.js";
+import { measure, runAfterFramePaint } from "./measure.js";
 
 let openFirstChunks;
 document.addEventListener("DOMContentLoaded", function () {
-  let inputArquivo = document.getElementById("arquivo");
-  let divLines = document.getElementById("output");
-  let indexDiv = document.getElementById("index");
+  let inputFile = document.getElementById("arquivo");
+  let initialBlock = document.getElementById("index");
 
-  inputArquivo.addEventListener("click", (e) => {
-    // indexDiv.setAttribute("style", "display: none");
-    setTimeout(() => indexDiv.remove(), 1000);
-  });
+  inputFile.addEventListener("click", (e) => initialBlock.remove());
 
-  inputArquivo.addEventListener("change", function (e) {
+  inputFile.addEventListener("change", function (e) {
     openFirstChunks = measure("paint first chunks");
     let file = e.target.files[0];
 
@@ -23,23 +19,20 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   const streamToText = async (blob) => {
-    const readableStream = await blob.getReader({
-      mode: "byob",
-    });
+    const readableStream = await blob.getReader({ mode: "byob" });
 
     while (true) {
-      const { done, value } = await readableStream.read(new Uint8Array(2000));
+      const { done, value } = await readableStream.read(new Uint8Array(1000));
 
-      if (done) {
-        break;
-      }
+      if (done) break;
 
       const text = new TextDecoder().decode(value);
+
       lexer(text);
-      // runAfterFramePaint(async () => {
-      //   openFirstChunks.finish();
-      // });
-      // return;
+
+      runAfterFramePaint(async () => {
+        openFirstChunks.finish();
+      });
     }
   };
 });
