@@ -1,42 +1,119 @@
-class Generator {
-  level = 0;
-  lastBracked = null; // 0 - square, 1 - curly
+// {
+//   "glossary": {
+//     "title": "example glossary",
+//     "p2": "p2",
+//     "empty": ""
+//   }
+// }
+/**
+ * @param {string} text
+ */
+export const lexer = (text) => {
+  const tokens = [];
+  let i = 0;
+  let tabs = 0;
 
-  constructor() {}
-
-  createVerticalLine() {
-    const verticalLine = document.createElement("div");
-    verticalLine.classList.add("line");
-    return verticalLine;
+  while (i < text.length) {
+    const char = text[i];
+    switch (char) {
+      case "{":
+        parseOn("brace", "{");
+        i++;
+        continue;
+      case "}":
+        parseOn("brace", "}");
+        i++;
+        continue;
+      case ":":
+        parseOn("colon", ":");
+        i++;
+        continue;
+      case ",":
+        parseOn("comma", ",");
+        i++;
+        continue;
+      case '"':
+        const [value, length] = readString(text, i + 1);
+        parseOn("string", value);
+        i += length + 1;
+        continue;
+      case " ":
+      case "\n":
+      case "\t":
+        i++;
+        continue;
+      default:
+        i++;
+        continue;
+    }
   }
+  return tokens;
+};
 
-  addLine(line = "") {
-    const lineElement = document.createElement("div");
-    lineElement.classList.add("line");
+const output = document.getElementById("output");
+const createOrangeNode = (text) => {
+  const node = document.createElement("span");
+  node.classList.add("orange");
+  node.innerText = text;
+  return node;
+};
+const commaNode = createOrangeNode(",");
+const openBraceNode = createOrangeNode("{");
+const closeBraceNode = createOrangeNode("}");
+const colonNode = createOrangeNode(":");
 
-    const foundSquareOpen = line.indexOf("[") != -1;
-    const foundSquareClose = line.indexOf("]") != -1;
-    const foundCurlyOpen = line.indexOf("{") != -1;
-    const foundCurlyClose = line.indexOf("}") != -1;
+const createClonableTextNode = () => {
+  const node = document.createElement("span");
+  node.classList.add("text");
+  return node;
+};
+const clonableTextNode = createClonableTextNode();
+const createTextNode = (text) => {
+  const node = clonableTextNode.cloneNode();
+  node.innerText = text;
+  return node;
+};
 
-    if (foundSquareOpen) {
-      this.level++;
-      this.lastBracked = 0;
+const parseOn = (type, value) => {
+  const when = {
+    comma(_) {
+      cloneAndAppend(commaNode);
+    },
+    string(value) {
+      const node = createTextNode(value);
+      output.appendChild(node);
+    },
+    brace(value) {
+      // TODO: Fazer cada brace separado
+      if (value === "{") {
+        cloneAndAppend(openBraceNode);
+      } else {
+        cloneAndAppend(closeBraceNode);
+      }
+    },
+    colon(_) {
+      cloneAndAppend(colonNode);
+    },
+  };
+
+  when[type](value);
+};
+
+const cloneAndAppend = (node) => {
+  const clone = node.cloneNode(true);
+  output.appendChild(clone);
+};
+
+const readString = (text, i) => {
+  let value = "";
+  let length = 0;
+  while (i < text.length) {
+    const char = text[i];
+    if (char === '"') {
+      return [value, length + 1];
     }
-    if (foundSquareClose) {
-      this.level--;
-      this.lastBracked = 0;
-    }
-
-    for (let i = 0; i < level; i++) {
-      lineElement.appendChild(createVerticalLine());
-    }
-
-    const [key, value] = line.split(":");
-
-    const keyElement = document.createElement("span");
-    keyElement.classList.add("key");
-
-    return lineElement;
+    value += char;
+    length++;
+    i++;
   }
-}
+};

@@ -1,4 +1,7 @@
-import { measure, runAfterFramePaint } from "./measure.js";
+import { lexer } from "./generate-dom.js";
+import { measure } from "./measure.js";
+
+let openFirstChunks;
 document.addEventListener("DOMContentLoaded", function () {
   let inputArquivo = document.getElementById("arquivo");
   let divLines = document.getElementById("output");
@@ -10,19 +13,12 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   inputArquivo.addEventListener("change", function (e) {
-    const openFirstChunks = measure("paint first chunks");
+    openFirstChunks = measure("paint first chunks");
     let file = e.target.files[0];
-    let p = document.createElement("p");
 
     (async () => {
       const fileContentStream = await file.stream();
-      let first2Parts = await streamToText(fileContentStream);
-
-      runAfterFramePaint(async () => {
-        openFirstChunks.finish();
-      });
-      p.textContent = first2Parts;
-      divLines.appendChild(p);
+      await streamToText(fileContentStream);
     })();
   });
 
@@ -39,15 +35,11 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const text = new TextDecoder().decode(value);
-      processChunkToDOM(text);
+      lexer(text);
+      // runAfterFramePaint(async () => {
+      //   openFirstChunks.finish();
+      // });
+      // return;
     }
-  };
-
-  const processChunkToDOM = (chunk) => {
-    let p = document.createElement("p");
-
-    p.textContent = chunk;
-
-    divLines.appendChild(p);
   };
 });
