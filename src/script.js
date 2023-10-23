@@ -49,22 +49,17 @@ jQuery(() => {
   })
 
   const input = document.getElementById("input")
-  input.addEventListener("change", handle);
 
-  function handle() {
-    let file = input.files[0]
+  input.addEventListener("change", (e) => {
+    const file = e.target.files[0]
+    const reader = new FileReader()
 
-    let reader = new FileReader()
     reader.onload = (e) => {
       const json = JSON.stringify(JSON.parse(e.target.result), null, 2)
       const lines = json.split("\n")
-
-      console.log(json)
-      console.log("worked")
-      console.log(lines)
-
+      
       jsonToTree(lines)
     }
     reader.readAsText(file, "UTF-8")
-  }
+  });
 })
