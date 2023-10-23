@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Home</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@100;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        html {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1 {
+            font-family: Inter;
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 58px;
+            letter-spacing: 0em;
+            text-align: left;
+            margin: 0;
+        }
+
+        p {
+            font-family: Inter;
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 29px;
+            letter-spacing: 0em;
+            text-align: left;
+        }
+
+        details {
+            display: flex;
+        }
+
+        details>details {
+            position: relative;
+            margin-left: 20px;
+        }
+
+        details>p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 29px;
+            letter-spacing: 0em;
+            padding-inline-start: 30px;
+            border-left: 1px solid #BFBFBF;
+            position: relative;
+            left: 5px;
+        }
+
+        b {
+            font-weight: 100;
+            color: #4E9590;
+        }
+
+        i {
+            font-style: normal;
+        }
+
+        .json-tree {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+            overflow: scroll;
+            margin: 10px 0;
+        }
+
+        .file-input-label {
+            align-self: center;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        #initial {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #results {
+            display: none;
+            flex-direction: column;
+            width: 638px;
+        }
+
+        #jsonName {
+            font-family: Inter;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 39px;
+            letter-spacing: 0em;
+            text-align: left;
+        }
+    </style>
+
+<body>
+    <section id="initial">
+        <h1>JSON Tree Viewer</h1>
+        <p>Simple JSON Viewer that runs completely on-client. No data exchange</p>
+    </section>
+
+    <section id="results">
+        <span id="jsonName"></span>
+        <div class="json-tree" id="json-tree"></div>
+    </section>
+
+    <label class="file-input-label">
+        <button onclick="document.getElementById('file-input').click()">Load JSON</button>
+        <input type="file" id="file-input" accept=".json" />
+    </label>
+
+    <script>
+
+        const root = document.getElementById('json-tree');
+        const itemsPerPage = 50;
+        let i = 0, j, startIndex = 0, endIndex = itemsPerPage, scrollStep = 0;
+
+        document.getElementById('file-input').addEventListener('change', FileUpload);
+
+        root.addEventListener('scroll', () => {
+            if (root.scrollTop > root.offsetHeight + scrollStep) {
+                scrollStep = root.scrollTop;
+                JsonManager();
+            }
+        });
+
+        class DataObject {
+            constructor() {
+                this.data = {};
+            }
+
+            get() {
+                return this.data;
+            }
+
+            set(data) {
+                this.data = data;
+            }
+        }
+
+        const dataObject = new DataObject();
+
+        function FileUpload(event) {
+            const file = event.target.files[ 0 ];
+
+            document.getElementById('jsonName').textContent = file.name;
+
+            const responseDeleteDatas = DeleteOldDatas();
+
+            if (responseDeleteDatas) {
+                (function ReadChunk() {
+                    if (file) {
+                        const reader = new FileReader();
+
+                        reader.onload = (e) => {
+                            const fileContents = e.target.result;
+                            const json = JSON.parse(fileContents);
+
+                            dataObject.set(json);
+
+                            JsonManager();
+                        };
+                        reader.readAsText(file);
+                    }
+                })();
+            }
+        }
+
+        function JsonManager() {
+            let json = dataObject.get();
+
+            if (Array.isArray(json)) {
+                json = { data: json };
+            }
+
+            document.getElementById('initial').style.display = 'none';
+            document.getElementById('results').style.display = 'flex';
+
+            Object.entries(json).forEach((item) => {
+                if (typeof item[ 1 ] !== 'object' && !Array.isArray(item[ 1 ])) {
+                    CreateChild(item[ 0 ], null, item[ 1 ]);
+                }
+
+                if (typeof item[ 1 ] === 'object') {
+                    let moreData = json;
+
+                    if (Array.isArray(item[ 1 ])) {
+                        moreData = item[ 1 ].slice(startIndex, endIndex);
+                        startIndex = endIndex;
+                        endIndex += itemsPerPage;
+                    }
+
+                    TraverseJSON(moreData, root);
+                }
+            });
+        }
+
+        function TraverseJSON(obj, grandParents) {
+            for (const key in obj) {
+
+                const value = obj[ key ];
+
+                if (typeof value === 'object') {
+                    const parent = CreateParent(key, i, value);
+                    j = grandParents.appendChild(parent);
+                    i++;
+                    TraverseJSON(value, parent);
+                }
+
+                if (typeof value !== 'object') {
+                    const child = CreateChild(key, j, value);
+                }
+
+            }
+        }
+
+        function CreateParent(key, i, value) {
+            const node = document.createElement('details');
+            node.open = true;
+
+            const parent = document.createElement('summary');
+            parent.classList.add(`parent-${i}`);
+            parent.style.color = '#4E9590';
+            parent.textContent =  `${key}: `;
+
+            node.appendChild(parent);
+
+            return node;
+        }
+
+        function CreateChild(key, parentDiv, value) {
+            const child = document.createElement('p');
+
+            child.classList.add(`child-${i - 1}`);
+            child.innerHTML = `<b>${key}: </b><i>${value}</i>`;
+
+            if (!parentDiv) {
+                parentDiv = root;
+            }
+
+            parentDiv.appendChild(child);
+        }
+
+        function DeleteOldDatas() {
+            root.querySelectorAll('details').forEach((item) => {
+                item.remove();
+            });
+
+            root.querySelectorAll('p').forEach((item) => {
+                item.remove();
+            });
+
+            return true;
+        }
+    </script>
+</body>
+</head>
+
+</html>
