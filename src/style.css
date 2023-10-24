@@ -1,3 +1,23 @@
+html, body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2em;
+}
+
 .test {
   color: blue;
+}
+
+.center {
+  margin: 0 auto;
+  text-align: center;
+  width: 800px;
+}
+
+.btn {
+  background-color: #E2E2E2;
+  font-size: 0.7em;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  cursor: pointer;
 }

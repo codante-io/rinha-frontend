@@ -5,12 +5,19 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-
-    <input type="file" id="input" multiple />
+    <div class="center">
+      <h1>JSON Tree Viewer</h1>
+      <p>Simple JSON Viewer that runs completely on-client. No data exchange</p>
+      <label for="input" class="btn">Load JSON</label>
+      <input type="file" id="input" style="display: none;"/>
+    </div>
 
     <div id="content">
       <ul id="tree">
@@ -18,6 +25,5 @@
     </div>
 
     <script src="script.js"></script>
-
   </body>
 </html>
