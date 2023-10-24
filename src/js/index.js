@@ -1,4 +1,4 @@
-import { lexer } from "./generate-dom.js";
+import { createParser } from "./generate-dom.js";
 import { measure, runAfterFramePaint } from "./measure.js";
 
 let openFirstChunks;
@@ -20,19 +20,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const streamToText = async (blob) => {
     const readableStream = await blob.getReader({ mode: "byob" });
-
+    const parser = createParser();
     while (true) {
       const { done, value } = await readableStream.read(new Uint8Array(1000));
 
-      if (done) break;
-
       const text = new TextDecoder().decode(value);
-
-      lexer(text);
-
       runAfterFramePaint(async () => {
         openFirstChunks.finish();
       });
+      console.log(text.substring(text.length - 6));
+      parser(text, done);
+      if (done) break;
     }
   };
 });
