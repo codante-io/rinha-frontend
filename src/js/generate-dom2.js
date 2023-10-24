@@ -14,8 +14,10 @@ export const createParser = () => {
     isAfterColon: false,
     isInsideString: false,
     isInsideNumber: false,
+    isInsideBooleanOrNull: false,
     accumulatedString: "",
     accumulatedNumber: "",
+    accumulatedBooleanOrNull: "",
     scope: "",
   };
 
@@ -50,16 +52,23 @@ export const createParser = () => {
         //se não tiver no meio de uma string
         helpers.scope = "";
       } else if (char === ":") {
+        helpers.isAfterColon = true;
         if (!helpers.isInsideString) {
           console.log("dois pontos");
         }
         // se não tiver no meio de uma string
       } else if (char === ",") {
+        helpers.isAfterColon = false;
         if (!helpers.isInsideString) {
           if (helpers.isInsideNumber) {
-            console.log(helpers.accumulatedNumber);
+            console.log("NUMBER >>> ", helpers.accumulatedNumber);
             helpers.accumulatedNumber = "";
             helpers.isInsideNumber = false;
+          }
+          if (helpers.isInsideBooleanOrNull) {
+            console.log("BOOL_NULL >>> ", helpers.accumulatedBooleanOrNull);
+            helpers.accumulatedBooleanOrNull = "";
+            helpers.isInsideBooleanOrNull = false;
           }
           console.log("virgula");
         }
@@ -71,7 +80,11 @@ export const createParser = () => {
         if (helpers.isInsideString) {
           helpers.accumulatedString = "";
         } else if (!helpers.isInsideString) {
-          console.log(helpers.accumulatedString);
+          if (!helpers.isAfterColon) {
+            console.log("OBJECT_KEY >>> ", helpers.accumulatedString);
+          } else {
+            console.log("STRING >>> ", helpers.accumulatedString);
+          }
           helpers.accumulatedString = "";
         }
       } else if (char === " " || char === "\n" || char === "\t") {
@@ -85,12 +98,17 @@ export const createParser = () => {
       } else if (!isNaN(Number(char)) && !isNaN(parseFloat(char))) {
         // se não tiver aberto um aspas antes
         if (!helpers.isInsideString) {
-          console.log("numero" + +char);
           helpers.isInsideNumber = true;
           helpers.accumulatedNumber += char;
         }
       } else if (helpers.isInsideString) {
         helpers.accumulatedString += char;
+      } else if (!helpers.isInsideNumber && !helpers.isInsideString) {
+        // Essas condições acima são redundantes, mas são para deixar claro o que está acontecendo
+        // booleanos e null
+
+        helpers.isInsideBooleanOrNull = true;
+        helpers.accumulatedBooleanOrNull += char;
       }
 
       i++;
