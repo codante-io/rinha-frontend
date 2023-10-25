@@ -29,6 +29,7 @@ export const createParser = () => {
 
       if (char === "{") {
         if (!helpers.isInsideString) {
+          helpers.isAfterColon = false;
           console.log("abrir object");
         }
         // se não tiver no meio de uma string
