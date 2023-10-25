@@ -18,7 +18,7 @@ export const createParser = () => {
     accumulatedString: "",
     accumulatedNumber: "",
     accumulatedBooleanOrNull: "",
-    scope: "",
+    scopes: [],
   };
 
   return (text) => {
@@ -32,25 +32,27 @@ export const createParser = () => {
           console.log("abrir object");
         }
         // se não tiver no meio de uma string
-        helpers.scope = "object";
+        helpers.scopes.push({ type: "object", index: 0 });
       } else if (char === "[") {
         if (!helpers.isInsideString) {
-          console.log("abrir array");
+          console.log("abrir array, tabs " + helpers.tabs);
+          helpers.tabs++;
         }
         // se não tiver no meio de uma string...
-        helpers.scope = "array";
+        helpers.scopes.push({ type: "array", index: 0 });
       } else if (char === "}") {
         //se não tiver no meio de uma string
+        helpers.tabs--;
         if (!helpers.isInsideString) {
           console.log("fechar object");
         }
-        helpers.scope = "";
+        helpers.scopes.pop();
       } else if (char === "]") {
         if (!helpers.isInsideString) {
           console.log("fechar array");
         }
         //se não tiver no meio de uma string
-        helpers.scope = "";
+        helpers.scopes.pop();
       } else if (char === ":") {
         helpers.isAfterColon = true;
         if (!helpers.isInsideString) {
@@ -59,16 +61,41 @@ export const createParser = () => {
         // se não tiver no meio de uma string
       } else if (char === ",") {
         helpers.isAfterColon = false;
+
         if (!helpers.isInsideString) {
+          // aumentar o index caso o virgula indique um novo item de array
+          // if (helpers.scopes.at(-1).type === "array") {
+          //   helpers.scopes.at(-1).index++;
+          // }
+
           if (helpers.isInsideNumber) {
-            console.log("NUMBER >>> ", helpers.accumulatedNumber);
+            if (helpers.scopes.at(-1).type === "array") {
+              console.log(
+                "NUMBER_IN_ARRAY >>> ",
+                helpers.accumulatedNumber,
+                "index: " + helpers.scopes.at(-1).index
+              );
+            } else if (helpers.scopes.at(-1).type === "object") {
+              console.log("NUMBER_In_OBJECT >>> ", helpers.accumulatedNumber);
+            }
             helpers.accumulatedNumber = "";
             helpers.isInsideNumber = false;
           }
           if (helpers.isInsideBooleanOrNull) {
-            console.log("BOOL_NULL >>> ", helpers.accumulatedBooleanOrNull);
+            if (helpers.scopes.at(-1).type === "array") {
+              console.log(
+                "BOOL_IN_ARRAY >>> ",
+                helpers.accumulatedBooleanOrNull,
+                "index: " + helpers.scopes.at(-1).index
+              );
+            } else {
+              console.log("BOOL_NULL >>> ", helpers.accumulatedBooleanOrNull);
+            }
             helpers.accumulatedBooleanOrNull = "";
             helpers.isInsideBooleanOrNull = false;
+          }
+          if (helpers.scopes.at(-1).type === "array") {
+            helpers.scopes.at(-1).index++;
           }
           console.log("virgula");
         }
@@ -80,10 +107,24 @@ export const createParser = () => {
         if (helpers.isInsideString) {
           helpers.accumulatedString = "";
         } else if (!helpers.isInsideString) {
-          if (!helpers.isAfterColon) {
-            console.log("OBJECT_KEY >>> ", helpers.accumulatedString);
-          } else {
-            console.log("STRING >>> ", helpers.accumulatedString);
+          if (helpers.scopes.at(-1).type === "object") {
+            if (!helpers.isAfterColon) {
+              console.log(
+                "OBJECT_KEY >>> ",
+                helpers.accumulatedString,
+                "scope " + helpers.scopes.at(-1).type
+              );
+            } else {
+              console.log("STRING >>> ", helpers.accumulatedString);
+            }
+          }
+          if (helpers.scopes.at(-1).type === "array") {
+            console.log(
+              "STRING_IN_ARRAY >>> ",
+              helpers.accumulatedString,
+              "index: " + helpers.scopes.at(-1).index,
+              "scope: " + helpers.scopes.at(-1).type
+            );
           }
           helpers.accumulatedString = "";
         }
@@ -95,14 +136,14 @@ export const createParser = () => {
           // se tiver dentro de um aspas, inserir o caractere
           helpers.accumulatedString += char;
         }
+      } else if (helpers.isInsideString) {
+        helpers.accumulatedString += char;
       } else if (!isNaN(Number(char)) && !isNaN(parseFloat(char))) {
         // se não tiver aberto um aspas antes
         if (!helpers.isInsideString) {
           helpers.isInsideNumber = true;
           helpers.accumulatedNumber += char;
         }
-      } else if (helpers.isInsideString) {
-        helpers.accumulatedString += char;
       } else if (!helpers.isInsideNumber && !helpers.isInsideString) {
         // Essas condições acima são redundantes, mas são para deixar claro o que está acontecendo
         // booleanos e null

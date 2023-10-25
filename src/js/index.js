@@ -23,15 +23,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const parser = createParser();
     const createParserBeta = parserTeste();
     while (true) {
-      const { done, value } = await readableStream.read(new Uint8Array(1000));
+      console.log("começou nova chunk");
+      const { done, value } = await readableStream.read(new Uint8Array(10));
 
       const text = new TextDecoder().decode(value);
       runAfterFramePaint(async () => {
         openFirstChunks.finish();
       });
-      console.log(text.substring(text.length - 6));
-      parser(text, done);
+      //parser(text, done);
       createParserBeta(text);
+      console.log(text.substring(text.length - 6));
       if (done) break;
     }
   };

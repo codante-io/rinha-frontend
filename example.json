@@ -4,6 +4,7 @@
     "id": 2,
     "name": "John Doe",
     "job": null,
-    "hobbies": ["surfing", true, 12, "swimming"]
+    "hobbies": ["surfing", true, 12, "swimming"],
+    "children": [["child1", "child2"]]
   }
 }
