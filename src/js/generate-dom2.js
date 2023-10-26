@@ -6,6 +6,20 @@
 //   }
 // }
 
+import {
+  createArrayKeyNode,
+  createKeyNode,
+  createStringNode,
+} from "./domgen/creators";
+import {
+  breakNode,
+  closeBracketNode,
+  colonNode,
+  nullNode,
+  openBracketNode,
+  tabNode,
+} from "./domgen/nodes";
+
 export const createParser = () => {
   let helpers = {
     partialValue: [""],
@@ -20,6 +34,31 @@ export const createParser = () => {
     accumulatedBooleanOrNull: "",
     scopes: [],
   };
+  let vdom = document.createDocumentFragment();
+  const output = document.getElementById("output");
+
+  function putLineToDom() {
+    const line = document.createElement("div");
+    line.className = "line";
+    line.appendChild(vdom);
+    vdom = document.createDocumentFragment();
+    output.appendChild(line);
+  }
+
+  function cloneToVdom(node) {
+    const clonedNode = node.cloneNode(true);
+
+    vdom.appendChild(clonedNode);
+  }
+
+  function cloneTabs() {
+    let i = 0;
+    while (i < helpers.tabs) {
+      const cloneTab = tabNode.cloneNode(true);
+      vdom.appendChild(cloneTab);
+      i++;
+    }
+  }
 
   return (text) => {
     let i = 0;
@@ -30,14 +69,35 @@ export const createParser = () => {
       if (char === "{") {
         if (!helpers.isInsideString) {
           helpers.isAfterColon = false;
+          helpers.tabs++;
           console.log("abrir object");
+          putLineToDom();
         }
         // se não tiver no meio de uma string
         helpers.scopes.push({ type: "object", index: 0 });
       } else if (char === "[") {
         if (!helpers.isInsideString) {
           console.log("abrir array, tabs " + helpers.tabs);
-          helpers.tabs++;
+          if (helpers.scopes.at(-1).type === "object") {
+            console.log("OBJECT_IN_ARRAY");
+            cloneToVdom(breakNode);
+            helpers.tabs++;
+            cloneTabs();
+            vdom.appendChild(
+              createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
+            );
+            // cloneTabs();
+          } else if (helpers.scopes.at(-1).type === "array") {
+            console.log("ARRAY_IN_ARRAY");
+            cloneToVdom(breakNode);
+            helpers.tabs++;
+            cloneTabs();
+            vdom.appendChild(
+              createArrayKeyNode(helpers.scopes.at(-1).index + ": AR_IN_AR ")
+            );
+          }
+          cloneToVdom(openBracketNode);
+          putLineToDom();
         }
         // se não tiver no meio de uma string...
         helpers.scopes.push({ type: "array", index: 0 });
@@ -50,7 +110,34 @@ export const createParser = () => {
         helpers.scopes.pop();
       } else if (char === "]") {
         if (!helpers.isInsideString) {
+          // if (helpers.isInsideBooleanOrNull) {
+          //   // TODO: solucao [001]
+          //   console.log(
+          //     "BOOL_IN_ARRAY >>> ",
+          //     helpers.accumulatedBooleanOrNull,
+          //     "index: " + helpers.scopes.at(-1).index
+          //   );
+          //   cloneTabs();
+          //   vdom.appendChild(
+          //     createStringNode(helpers.accumulatedBooleanOrNull)
+          //   );
+          // }
+
+          // if (helpers.isInsideNumber) {
+          //   console.log(
+          //     "NUMBER_IN_ARRAY >>> ",
+          //     helpers.accumulatedNumber,
+          //     "index: " + helpers.scopes.at(-1).index
+          //   );
+          //   cloneTabs();
+          //   vdom.appendChild(createStringNode(helpers.accumulatedNumber));
+          // }
+
           console.log("fechar array");
+          helpers.tabs--;
+          putLineToDom();
+          cloneTabs();
+          cloneToVdom(closeBracketNode);
         }
         //se não tiver no meio de uma string
         helpers.scopes.pop();
@@ -58,6 +145,8 @@ export const createParser = () => {
         helpers.isAfterColon = true;
         if (!helpers.isInsideString) {
           console.log("dois pontos");
+
+          cloneToVdom(colonNode);
         }
         // se não tiver no meio de uma string
       } else if (char === ",") {
@@ -76,21 +165,39 @@ export const createParser = () => {
                 helpers.accumulatedNumber,
                 "index: " + helpers.scopes.at(-1).index
               );
+              cloneTabs();
+              vdom.appendChild(
+                createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
+              );
+              vdom.appendChild(createStringNode(helpers.accumulatedNumber));
             } else if (helpers.scopes.at(-1).type === "object") {
               console.log("NUMBER_In_OBJECT >>> ", helpers.accumulatedNumber);
+              vdom.appendChild(createStringNode(helpers.accumulatedNumber));
             }
             helpers.accumulatedNumber = "";
             helpers.isInsideNumber = false;
           }
           if (helpers.isInsideBooleanOrNull) {
             if (helpers.scopes.at(-1).type === "array") {
+              // TODO[001]: bug: number, null e boolean estão sendo renderizados
+              //                 fora do array quando são o último item
               console.log(
                 "BOOL_IN_ARRAY >>> ",
                 helpers.accumulatedBooleanOrNull,
                 "index: " + helpers.scopes.at(-1).index
               );
+              cloneTabs();
+              vdom.appendChild(
+                createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
+              );
+              vdom.appendChild(
+                createStringNode(helpers.accumulatedBooleanOrNull)
+              );
             } else {
               console.log("BOOL_NULL >>> ", helpers.accumulatedBooleanOrNull);
+              vdom.appendChild(
+                createStringNode(helpers.accumulatedBooleanOrNull)
+              );
             }
             helpers.accumulatedBooleanOrNull = "";
             helpers.isInsideBooleanOrNull = false;
@@ -99,6 +206,7 @@ export const createParser = () => {
             helpers.scopes.at(-1).index++;
           }
           console.log("virgula");
+          putLineToDom();
         }
         // se não tiver no meio de uma string
       } else if (char === '"') {
@@ -115,8 +223,13 @@ export const createParser = () => {
                 helpers.accumulatedString,
                 "scope " + helpers.scopes.at(-1).type
               );
+              cloneTabs();
+              vdom.appendChild(createKeyNode(helpers.accumulatedString));
             } else {
               console.log("STRING >>> ", helpers.accumulatedString);
+              vdom.appendChild(
+                createStringNode('"' + helpers.accumulatedString + '"')
+              );
             }
           }
           if (helpers.scopes.at(-1).type === "array") {
@@ -125,6 +238,13 @@ export const createParser = () => {
               helpers.accumulatedString,
               "index: " + helpers.scopes.at(-1).index,
               "scope: " + helpers.scopes.at(-1).type
+            );
+            cloneTabs();
+            vdom.appendChild(
+              createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
+            );
+            vdom.appendChild(
+              createStringNode('"' + helpers.accumulatedString + '"')
             );
           }
           helpers.accumulatedString = "";
@@ -139,11 +259,20 @@ export const createParser = () => {
         }
       } else if (helpers.isInsideString) {
         helpers.accumulatedString += char;
-      } else if (!isNaN(Number(char)) && !isNaN(parseFloat(char))) {
-        // se não tiver aberto um aspas antes
-        if (!helpers.isInsideString) {
+      } else if (
+        !isNaN(Number(char)) ||
+        char === "-" ||
+        char === "." ||
+        char === "+" ||
+        char === "e" ||
+        char === "E"
+      ) {
+        // se não tiver aberto um aspas antes ou dentro de um boolean
+        if (!helpers.isInsideString && !helpers.isInsideBooleanOrNull) {
           helpers.isInsideNumber = true;
           helpers.accumulatedNumber += char;
+        } else if (helpers.isInsideBooleanOrNull) {
+          helpers.accumulatedBooleanOrNull += char;
         }
       } else if (!helpers.isInsideNumber && !helpers.isInsideString) {
         // Essas condições acima são redundantes, mas são para deixar claro o que está acontecendo

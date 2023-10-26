@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       //parser(text, done);
       createParserBeta(text);
-      console.log(text.substring(text.length - 6));
+      // console.log(text.substring(text.length - 6));
       if (done) break;
     }
   };
