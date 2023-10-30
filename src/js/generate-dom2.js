@@ -1,11 +1,3 @@
-// {
-//   "glossary": {
-//     "title": "example glossary",
-//     "p2": "p2",
-//     "empty": ""
-//   }
-// }
-
 import {
   createArrayKeyNode,
   createKeyNode,
@@ -17,14 +9,13 @@ import {
   colonNode,
   nullNode,
   openBracketNode,
+  tabImageNode,
   tabNode,
 } from "./domgen/nodes";
 
 export const createParser = () => {
   let helpers = {
     partialValue: [""],
-    tabs: 0,
-    arrayCounters: [],
     isAfterColon: false,
     isInsideString: false,
     isInsideNumber: false,
@@ -51,7 +42,7 @@ export const createParser = () => {
     vdom.appendChild(clonedNode);
   }
 
-  function cloneTabs() {
+  function cloneTabsOld() {
     let i = 0;
     const tabs = getTabs(helpers.scopes);
     while (i < tabs) {
@@ -61,19 +52,23 @@ export const createParser = () => {
     }
   }
 
-  function getTabs(scopes) {
-    return (
-      scopes.length +
-      scopes.reduce((acc, scope) => {
-        if (scope.type === "object") {
-          acc++;
-        }
-        return acc;
-      }, 0)
-    );
+  function cloneTabs() {
+    let i = 0;
+    const tabWidth = getTabs(helpers.scopes) * 20;
+
+    const cloneTab = tabImageNode.cloneNode(true);
+    cloneTab.style.width = tabWidth + "px";
+
+    vdom.appendChild(cloneTab);
   }
 
-  return (text) => {
+  function getTabs(scopes) {
+    const subTabs = scopes[0].type === "object" ? 1 : 0;
+
+    return scopes.length - subTabs;
+  }
+
+  return (text, done) => {
     let i = 0;
 
     while (i < text.length) {
@@ -81,79 +76,80 @@ export const createParser = () => {
 
       if (char === "{") {
         if (!helpers.isInsideString) {
+          // se não tiver no meio de uma string
           helpers.isAfterColon = false;
-          helpers.tabs++;
+
           console.log("abrir object");
           putLineToDom();
         }
-        // se não tiver no meio de uma string
         helpers.scopes.push({ type: "object", index: 0 });
       } else if (char === "[") {
         if (!helpers.isInsideString) {
-          console.log("abrir array, tabs " + helpers.tabs);
+          console.log("abrir array");
+
           if (helpers.scopes.at(-1).type === "object") {
-            console.log("OBJECT_IN_ARRAY");
+            console.log("ARRAY_IN_OBJECT");
+            cloneToVdom(openBracketNode);
             cloneToVdom(breakNode);
-            helpers.tabs++;
-            cloneTabs();
-            vdom.appendChild(
-              createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
-            );
-            // cloneTabs();
           } else if (helpers.scopes.at(-1).type === "array") {
             console.log("ARRAY_IN_ARRAY");
-            cloneToVdom(breakNode);
-            helpers.tabs++;
             cloneTabs();
-            vdom.appendChild(
-              createArrayKeyNode(helpers.scopes.at(-1).index + ": AR_IN_AR ")
-            );
+            cloneToVdom(openBracketNode);
+            cloneToVdom(breakNode);
           }
-          cloneToVdom(openBracketNode);
           putLineToDom();
         }
         // se não tiver no meio de uma string...
         helpers.scopes.push({ type: "array", index: 0 });
       } else if (char === "}") {
         //se não tiver no meio de uma string
-        helpers.tabs--;
         if (!helpers.isInsideString) {
           console.log("fechar object");
         }
         helpers.scopes.pop();
       } else if (char === "]") {
         if (!helpers.isInsideString) {
-          // if (helpers.isInsideBooleanOrNull) {
-          //   // TODO: solucao [001]
-          //   console.log(
-          //     "BOOL_IN_ARRAY >>> ",
-          //     helpers.accumulatedBooleanOrNull,
-          //     "index: " + helpers.scopes.at(-1).index
-          //   );
-          //   cloneTabs();
-          //   vdom.appendChild(
-          //     createStringNode(helpers.accumulatedBooleanOrNull)
-          //   );
-          // }
+          if (helpers.isInsideBooleanOrNull) {
+            // TODO: solucao [001]
+            console.log(
+              "BOOL_IN_ARRAY >>> ",
+              helpers.accumulatedBooleanOrNull,
+              "index: " + helpers.scopes.at(-1).index
+            );
+            cloneTabs();
+            vdom.appendChild(
+              createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
+            );
+            vdom.appendChild(
+              createStringNode(helpers.accumulatedBooleanOrNull)
+            );
+            helpers.accumulatedBooleanOrNull = "";
+            helpers.isInsideBooleanOrNull = false;
+          }
 
-          // if (helpers.isInsideNumber) {
-          //   console.log(
-          //     "NUMBER_IN_ARRAY >>> ",
-          //     helpers.accumulatedNumber,
-          //     "index: " + helpers.scopes.at(-1).index
-          //   );
-          //   cloneTabs();
-          //   vdom.appendChild(createStringNode(helpers.accumulatedNumber));
-          // }
+          if (helpers.isInsideNumber) {
+            console.log(
+              "NUMBER_IN_ARRAY >>> ",
+              helpers.accumulatedNumber,
+              "index: " + helpers.scopes.at(-1).index
+            );
+            cloneTabs();
+            vdom.appendChild(
+              createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
+            );
+            vdom.appendChild(createStringNode(helpers.accumulatedNumber));
+            helpers.accumulatedNumber = "";
+            helpers.isInsideNumber = false;
+          }
 
           console.log("fechar array");
-          helpers.tabs--;
+          helpers.scopes.pop();
           putLineToDom();
           cloneTabs();
           cloneToVdom(closeBracketNode);
+        } else {
+          helpers.scopes.pop();
         }
-        //se não tiver no meio de uma string
-        helpers.scopes.pop();
       } else if (char === ":") {
         helpers.isAfterColon = true;
         if (!helpers.isInsideString) {
@@ -265,7 +261,7 @@ export const createParser = () => {
       } else if (
         char === " " ||
         char === "\n" ||
-        char == "\r" ||
+        char === "\r" ||
         char === "\t"
       ) {
         // se não tiver aberto um aspas antes
@@ -301,6 +297,10 @@ export const createParser = () => {
       }
 
       i++;
+    }
+
+    if (done) {
+      putLineToDom();
     }
   };
 };

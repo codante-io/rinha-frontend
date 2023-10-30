@@ -27,13 +27,15 @@ document.addEventListener("DOMContentLoaded", function () {
       const { done, value } = await readableStream.read(new Uint8Array(10));
 
       const text = new TextDecoder().decode(value);
-      runAfterFramePaint(async () => {
-        openFirstChunks.finish();
-      });
+
       //parser(text, done);
-      createParserBeta(text);
+
+      createParserBeta(text, done);
       // console.log(text.substring(text.length - 6));
       if (done) break;
     }
+    runAfterFramePaint(async () => {
+      openFirstChunks.finish();
+    });
   };
 });

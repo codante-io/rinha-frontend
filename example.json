@@ -7,6 +7,7 @@
     "outro": [1, 2, true],
     "levanta": [{ "a_mao": "ae!" }],
     "hobbies": ["surfing", true, -42, 12.5, "swimming", 9],
-    "children": [["child1", "child2"]]
+    "children": [["child1", "child2"]],
+    "outro_valor": "teste"
   }
 }

@@ -6,3 +6,6 @@ export const colonNode = createSpanNode(": ", "orange");
 export const tabNode = createSpanNode("", "tab");
 export const breakNode = createSpanNode("\n", "break");
 export const nullNode = createSpanNode("null", "string");
+
+export const tabImageNode = document.createElement("div");
+tabImageNode.className = "tab-img";
