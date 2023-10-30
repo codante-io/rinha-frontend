@@ -2,7 +2,7 @@
   "person": {
     "is_able": true,
     "id": 2,
-    "name": "John Doe",
+    "name": "\u849c\"John\u849cDoe\"\\",
     "job": null,
     "outro": [1, 2, true],
     "levanta": [{ "a_mao": "ae!" }],

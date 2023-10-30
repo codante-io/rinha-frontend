@@ -53,11 +53,24 @@ export const createParser = () => {
 
   function cloneTabs() {
     let i = 0;
-    while (i < helpers.tabs) {
+    const tabs = getTabs(helpers.scopes);
+    while (i < tabs) {
       const cloneTab = tabNode.cloneNode(true);
       vdom.appendChild(cloneTab);
       i++;
     }
+  }
+
+  function getTabs(scopes) {
+    return (
+      scopes.length +
+      scopes.reduce((acc, scope) => {
+        if (scope.type === "object") {
+          acc++;
+        }
+        return acc;
+      }, 0)
+    );
   }
 
   return (text) => {
