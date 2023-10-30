@@ -1,11 +1,11 @@
-export function measure(name) {
+export function measure(name, { willAlert = false }) {
   const startTime = performance.now();
 
   return {
     finish: () => {
       const duration = performance.now() - startTime;
       //console.log(`${name}: ${duration}ms`);
-      alert(`${name}: ${duration}ms`);
+      if (willAlert) alert(`${name}: ${duration}ms`);
     },
   };
 }

@@ -1,13 +1,16 @@
-{
-  "person": {
-    "is_able": true,
-    "id": 2,
-    "name": "\u849c\"John\u849cDoe\"\\",
-    "job": null,
-    "outro": [1, 2, true],
-    "levanta": [{ "a_mao": "ae!" }],
-    "hobbies": ["surfing", true, -42, 12.5, "swimming", 9],
-    "children": [["child1", "child2"]],
-    "outro_valor": "teste"
+[
+  {
+    "person": {
+      "id": 2,
+      "is_able": true,
+      "Lucky, Phrase": "Oh, I see! This!",
+      "name/\"nick\"": "\u849c\" \b\f\r\n\t John\u849cDoe\"\\",
+      "job": null,
+      "outro": [1, 2, true],
+      "levanta": [{ "a_mao": "ae!" }],
+      "hobbies": ["surfing", true, -42, 12.5, "swimming", 9],
+      "children": [["child1", "child2"]],
+      "outro_valor": "teste"
+    }
   }
-}
+]
