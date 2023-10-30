@@ -7,7 +7,6 @@ import {
   breakNode,
   closeBracketNode,
   colonNode,
-  nullNode,
   openBracketNode,
   tabImageNode,
   tabNode,

@@ -4,7 +4,8 @@ export function measure(name) {
   return {
     finish: () => {
       const duration = performance.now() - startTime;
-      console.log(`${name}: ${duration}ms`);
+      //console.log(`${name}: ${duration}ms`);
+      alert(`${name}: ${duration}ms`);
     },
   };
 }

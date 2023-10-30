@@ -146,3 +146,21 @@ const somarStringsTrad = (str1) => {
 };
 
 somarStringsTrad("Opa mano bora testar com 6 p");
+
+const consoles = measure("consoles");
+
+for (let i = 0; i < 20; i++) {
+  console.log("Opa testando essa bagaça" + i);
+}
+consoles.finish();
+
+let span = document.createElement("span");
+span.style.borderLeft = "1px solid black";
+span.style.width = "10px";
+span.style.height = "10px";
+
+for (let i = 0; i < 20; i++) {
+  document.body.appendChild(span);
+}
+
+let image;

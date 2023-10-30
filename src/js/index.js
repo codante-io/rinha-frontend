@@ -1,7 +1,10 @@
-import { createParser } from "./generate-dom.js";
 import { createParser as parserTeste } from "./generate-dom2.js";
 import { measure, runAfterFramePaint } from "./measure.js";
 let openFirstChunks;
+const image = new Image();
+image.src = "../../../tae.gif";
+
+// console.log = () => {};
 document.addEventListener("DOMContentLoaded", function () {
   let inputFile = document.getElementById("arquivo");
   let initialBlock = document.getElementById("index");
@@ -20,14 +23,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const streamToText = async (blob) => {
     const readableStream = await blob.getReader({ mode: "byob" });
-    const parser = createParser();
+    // const parser = createParser();
     const createParserBeta = parserTeste();
     while (true) {
       console.log("começou nova chunk");
-      const { done, value } = await readableStream.read(new Uint8Array(10));
-
+      const { done, value } = await readableStream.read(new Uint8Array(1000));
       const text = new TextDecoder().decode(value);
-
       //parser(text, done);
 
       createParserBeta(text, done);
