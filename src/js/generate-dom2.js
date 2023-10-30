@@ -262,7 +262,12 @@ export const createParser = () => {
           }
           helpers.accumulatedString = "";
         }
-      } else if (char === " " || char === "\n" || char === "\t") {
+      } else if (
+        char === " " ||
+        char === "\n" ||
+        char == "\r" ||
+        char === "\t"
+      ) {
         // se não tiver aberto um aspas antes
         if (!helpers.isInsideString) {
           console.log("pula linha, espaço essas coisas");
