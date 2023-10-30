@@ -2,7 +2,7 @@
 
 - [x] Resolver positivo/negativo
 - [x] Unicode(só ignorar) <= Eu não ignorei 😭, mas ficou tão bonitinho o kanji
-- [ ] Backslash/Escaped
+- [x] Backslash/Escaped
 - [x] Bug de número fora da lista
 - [x] Tabs incorretas
 - [x] CRLF
