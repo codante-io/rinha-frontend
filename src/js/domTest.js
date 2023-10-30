@@ -1,3 +1,6 @@
+const image = new Image();
+image.src = "../../../tae.gif";
+
 import { measure, runAfterFramePaint } from "./measure";
 const bagulho = { measure, runAfterFramePaint };
 
@@ -147,20 +150,82 @@ const somarStringsTrad = (str1) => {
 
 somarStringsTrad("Opa mano bora testar com 6 p");
 
-const consoles = measure("consoles");
+// consoles
+// const consoles = measure("consoles");
 
-for (let i = 0; i < 20; i++) {
-  console.log("Opa testando essa bagaça" + i);
-}
-consoles.finish();
+// for (let i = 0; i < 20; i++) {
+//   console.log("Opa testando essa bagaça" + i);
+// }
+// consoles.finish();
 
-let span = document.createElement("span");
-span.style.borderLeft = "1px solid black";
-span.style.width = "10px";
-span.style.height = "10px";
+// fim testes console
+let button = document.getElementById("btn");
+button.addEventListener("click", function () {
+  //warmup
+  // let spanWarm = document.createElement("span");
+  // for (let i = 0; i < 100; i++) {
+  //   document.body.appendChild(spanWarm.cloneNode(true));
+  // }
+  //testes de tabs:
 
-for (let i = 0; i < 20; i++) {
-  document.body.appendChild(span);
-}
+  let mondiSpan = measure("span");
+  let span = document.createElement("span");
+  span.style.borderLeft = "1px solid black";
+  span.style.width = "10px";
+  span.style.height = "10px";
 
-let image;
+  for (let i = 0; i < 69; i++) {
+    document.body.appendChild(span.cloneNode(true));
+  }
+  runAfterFramePaint(() => {
+    mondiSpan.finish();
+  });
+});
+
+let button2 = document.getElementById("btn2");
+button2.addEventListener("click", function () {
+  let divComBgInline = measure("div com bg inline");
+  let div = document.createElement("div");
+  div.style = "background-image: url(tae.gif)";
+  div.style.width = "10px";
+  div.style.height = "10px";
+
+  for (let i = 0; i < 32; i++) {
+    document.body.appendChild(div.cloneNode(true));
+  }
+
+  runAfterFramePaint(() => {
+    divComBgInline.finish();
+  });
+});
+
+let button3 = document.getElementById("btn3");
+button3.addEventListener("click", function () {
+  let divComBgClass = measure("div com bg class");
+  let div2 = document.createElement("div");
+  div2.className = "tab-img";
+
+  for (let i = 0; i < 20; i++) {
+    document.body.appendChild(div2.cloneNode(true));
+  }
+  runAfterFramePaint(() => {
+    divComBgClass.finish();
+  });
+});
+
+let button4 = document.getElementById("btn4");
+button4.addEventListener("click", function () {
+  let divComBgInline = measure("div com bg inline");
+  let div = document.createElement("div");
+  div.style = "background-image: url(tae.webp)";
+  div.style.width = "10px";
+  div.style.height = "10px";
+
+  for (let i = 0; i < 32; i++) {
+    document.body.appendChild(div.cloneNode(true));
+  }
+
+  runAfterFramePaint(() => {
+    divComBgInline.finish();
+  });
+});
