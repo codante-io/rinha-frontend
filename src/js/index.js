@@ -2,6 +2,34 @@ import { createParser as parserTeste } from "./generate-dom2.js";
 import { measure, runAfterFramePaint } from "./measure.js";
 let openFirstChunks;
 
+var throttleTimer;
+const chunkLength = new Uint8Array(1000);
+const throttle = (callback, time) => {
+  if (throttleTimer) return;
+  throttleTimer = true;
+  setTimeout(() => {
+    callback();
+    throttleTimer = false;
+  }, time);
+};
+
+const handleInfiniteScroll = (callback) => {
+  let limitToLoadMore =
+    document.body.offsetHeight * 0.1 < 500
+      ? document.body.offsetHeight * 0.1
+      : 500;
+  throttle(() => {
+    const endOfPage =
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight - limitToLoadMore;
+
+    if (endOfPage) {
+      console.log("end of page");
+      callback();
+    }
+  }, 300);
+};
+
 const image = new Image();
 image.src = "../../../tae.gif";
 
@@ -24,18 +52,38 @@ document.addEventListener("DOMContentLoaded", function () {
     })();
   });
 
+  async function readOne(stream, createParserBeta, length = 3000) {
+    const { done, value } = await stream.read(new Uint8Array(length));
+    const text = new TextDecoder().decode(value);
+
+    createParserBeta(text, done);
+    return done;
+  }
+
   const streamToText = async (blob) => {
+    let finished = false;
     const readableStream = await blob.getReader({ mode: "byob" });
     const createParserBeta = parserTeste();
-    while (true) {
-      console.log("começou nova chunk");
-      const { done, value } = await readableStream.read(new Uint8Array(1000));
-      const text = new TextDecoder().decode(value);
+    console.log("começou nova chunk");
+    const { done, value } = await readableStream.read(new Uint8Array(500));
+    const text = new TextDecoder().decode(value);
 
-      createParserBeta(text, done);
-      // console.log(text.substring(text.length - 6));
-      if (done) break;
-    }
+    createParserBeta(text, done);
+    handleInfiniteScroll(() => {
+      readOne(readableStream, createParserBeta, 500);
+    });
+
+    window.addEventListener("scroll", () =>
+      handleInfiniteScroll(async () => {
+        if (!finished) {
+          let done = await readOne(readableStream, createParserBeta);
+          finished = done;
+        }
+      })
+    );
+
+    // console.log(text.substring(text.length - 6));
+
     runAfterFramePaint(async () => {
       openFirstChunks.finish();
     });
