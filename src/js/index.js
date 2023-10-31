@@ -13,6 +13,7 @@ const throttle = (callback, time) => {
   }, time);
 };
 
+let fileNameDiv = document.getElementById("filename");
 const handleInfiniteScroll = (callback) => {
   let limitToLoadMore =
     document.body.offsetHeight * 0.1 < 500
@@ -48,8 +49,6 @@ document.addEventListener("DOMContentLoaded", function () {
     /** @type {File} */
     let file = e.target.files[0];
 
-    // document.getElementById("filename").innerText = file.name;
-
     streamToText(file);
   });
 
@@ -67,11 +66,12 @@ document.addEventListener("DOMContentLoaded", function () {
     let finished = false;
     const readableStream = await blob.getReader({ mode: "byob" });
 
-    console.log("começou nova chunk");
     const { done, value } = await readableStream.read(new Uint8Array(500));
     const text = textDecoder.decode(value);
 
     parser(text, done);
+    fileNameDiv.appendChild(document.createTextNode(file.name));
+
     handleInfiniteScroll(() => {
       readOne(readableStream, parser, 500);
     });
