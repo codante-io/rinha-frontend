@@ -3,7 +3,6 @@ import { measure, runAfterFramePaint } from "./measure.js";
 let openFirstChunks;
 
 var throttleTimer;
-
 const throttle = (callback, time) => {
   if (throttleTimer) return;
   throttleTimer = true;
