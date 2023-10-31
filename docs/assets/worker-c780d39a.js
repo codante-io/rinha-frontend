@@ -1,0 +1,1 @@
+(function(){"use strict";onmessage=async function(s){try{const a=s.data.stream().getReader();let t="";for(;;){const{done:c,value:o}=await a.read(),n=new TextDecoder().decode(o);if(t+=n,c)break}JSON.parse(t),postMessage(!0)}catch(e){console.log(e),postMessage(!1)}}})();
