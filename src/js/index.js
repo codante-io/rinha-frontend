@@ -1,8 +1,9 @@
-import { createParser as parserTeste } from "./generate-dom2.js";
+import { createParser } from "./generate-dom2.js";
 import { measure, runAfterFramePaint } from "./measure.js";
 let openFirstChunks;
-
+let textDecoder = new TextDecoder();
 var throttleTimer;
+const parser = createParser();
 const throttle = (callback, time) => {
   if (throttleTimer) return;
   throttleTimer = true;
@@ -47,14 +48,14 @@ document.addEventListener("DOMContentLoaded", function () {
     /** @type {File} */
     let file = e.target.files[0];
 
-    document.getElementById("filename").innerText = file.name;
+    // document.getElementById("filename").innerText = file.name;
 
     streamToText(file);
   });
 
   async function readOne(stream, createParserBeta, length = 3000) {
     const { done, value } = await stream.read(new Uint8Array(length));
-    const text = new TextDecoder().decode(value);
+    const text = textDecoder.decode(value);
 
     createParserBeta(text, done);
     return done;
@@ -65,20 +66,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let finished = false;
     const readableStream = await blob.getReader({ mode: "byob" });
-    const createParserBeta = parserTeste();
+
     console.log("começou nova chunk");
     const { done, value } = await readableStream.read(new Uint8Array(500));
-    const text = new TextDecoder().decode(value);
+    const text = textDecoder.decode(value);
 
-    createParserBeta(text, done);
+    parser(text, done);
     handleInfiniteScroll(() => {
-      readOne(readableStream, createParserBeta, 500);
+      readOne(readableStream, parser, 500);
     });
 
     window.addEventListener("scroll", () =>
       handleInfiniteScroll(async () => {
         if (!finished) {
-          let done = await readOne(readableStream, createParserBeta);
+          let done = await readOne(readableStream, parser);
           finished = done;
         }
       })
