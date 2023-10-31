@@ -15,6 +15,8 @@ onmessage = async function (e) {
       if (done) break;
     }
 
+    JSON.parse(acc);
+
     postMessage(true);
   } catch (e) {
     console.log(e);

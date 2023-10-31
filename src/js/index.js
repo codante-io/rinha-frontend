@@ -90,7 +90,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       worker.postMessage(file);
       worker.onmessage = function (e) {
-        if (e.data === false) {
+        if (e.data === true) {
+          alert("Arquivo válido");
+        } else {
           alert("Arquivo inválido");
           window.location.reload();
         }
