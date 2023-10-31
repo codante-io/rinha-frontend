@@ -31,7 +31,7 @@ const handleInfiniteScroll = (callback) => {
 };
 
 const image = new Image();
-image.src = "../../../tae.gif";
+image.src = "./tae.gif";
 
 document.addEventListener("DOMContentLoaded", function () {
   let inputFile = document.getElementById("arquivo");
