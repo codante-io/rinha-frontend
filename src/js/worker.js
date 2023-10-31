@@ -2,6 +2,7 @@ onmessage = async function (e) {
   try {
     /** @type {File}  */
     const file = e.data;
+
     const stream = file.stream();
     const reader = stream.getReader();
     let acc = "";
@@ -19,7 +20,6 @@ onmessage = async function (e) {
 
     postMessage(true);
   } catch (e) {
-    console.log(e);
     postMessage(false);
   }
 };

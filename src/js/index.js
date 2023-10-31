@@ -1,9 +1,19 @@
 import { createParser } from "./generate-dom2.js";
 import { measure, runAfterFramePaint } from "./measure.js";
+
 let openFirstChunks;
-let textDecoder = new TextDecoder();
-var throttleTimer;
+let throttleTimer;
+let finished = false;
+const textDecoder = new TextDecoder();
 const parser = createParser();
+
+const image = new Image();
+image.src = "./tae.gif";
+
+const worker = new Worker(new URL("./worker.js", import.meta.url), {
+  type: "module",
+});
+
 const throttle = (callback, time) => {
   if (throttleTimer) return;
   throttleTimer = true;
@@ -13,7 +23,6 @@ const throttle = (callback, time) => {
   }, time);
 };
 
-let fileNameDiv = document.getElementById("filename");
 const handleInfiniteScroll = (callback) => {
   let limitToLoadMore =
     document.body.offsetHeight * 0.1 < 500
@@ -31,21 +40,23 @@ const handleInfiniteScroll = (callback) => {
   }, 300);
 };
 
-const image = new Image();
-image.src = "./tae.gif";
-
-const worker = new Worker(new URL("./worker.js", import.meta.url), {
-  type: "module",
-});
-
 document.addEventListener("DOMContentLoaded", function () {
-  let inputFile = document.getElementById("arquivo");
-  let initialBlock = document.getElementById("index");
+  const initialBlock = document.getElementById("index");
+  const errorBlock = document.getElementById("error");
 
-  inputFile.addEventListener("click", (e) => initialBlock.remove());
+  if (this.location.hash === "#error") {
+    errorBlock.style.display = "block";
+    this.location.hash = "";
+  }
+
+  const inputFile = document.getElementById("arquivo");
 
   inputFile.addEventListener("change", function (e) {
+    initialBlock.style.display = "none";
+    errorBlock.style.display = "none";
+
     openFirstChunks = measure("paint first chunks", { willAlert: false });
+
     /** @type {File} */
     let file = e.target.files[0];
 
@@ -62,15 +73,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const streamToText = async (file) => {
     const blob = file.stream();
-
-    let finished = false;
     const readableStream = await blob.getReader({ mode: "byob" });
-
     const { done, value } = await readableStream.read(new Uint8Array(500));
     const text = textDecoder.decode(value);
 
     parser(text, done);
-    fileNameDiv.appendChild(document.createTextNode(file.name));
+
+    const fileNameBlock = document.getElementById("filename");
+    fileNameBlock.appendChild(document.createTextNode(file.name));
 
     handleInfiniteScroll(() => {
       readOne(readableStream, parser, 500);
@@ -90,11 +100,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       worker.postMessage(file);
       worker.onmessage = function (e) {
-        if (e.data === true) {
-          alert("Arquivo válido");
-        } else {
-          alert("Arquivo inválido");
-          window.location.reload();
+        if (e.data === false) {
+          location.hash = "error";
+          location.reload();
         }
       };
     });

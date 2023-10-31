@@ -35,7 +35,6 @@ export const createParser = () => {
     vdom = document.createDocumentFragment();
     const tabWidth = getTabs(helpers.scopes) * 20;
     line.style.gridTemplateColumns = `${tabWidth}px auto`;
-    // console.table(helpers.scopes);
     output.appendChild(line);
 
     return line;
@@ -46,30 +45,6 @@ export const createParser = () => {
 
     vdom.appendChild(clonedNode);
   }
-
-  // function cloneTabsOld() {
-  //   let i = 0;
-  //   const tabs = getTabs(helpers.scopes);
-  //   while (i < tabs) {
-  //     const cloneTab = tabNode.cloneNode(true);
-  //     vdom.appendChild(cloneTab);
-  //     i++;
-  //   }
-  // }
-
-  // function cloneTabsOld() {
-  //   const tabWidth = getTabs(helpers.scopes) * 20;
-
-  //   const cloneTab = tabImageNode.cloneNode(true);
-  //   cloneTab.style.width = tabWidth + "px";
-
-  //   vdom.appendChild(cloneTab);
-  // }
-
-  // function cloneTabs() {
-  //   const tabWidth = getTabs(helpers.scopes) * 20;
-  //   helpers.thisLineElement.style.gridTemplateColumns = `${tabWidth}px auto`;
-  // }
 
   function getTabs(scopes) {
     const fstScopeType = scopes[0]?.type;
