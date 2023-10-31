@@ -16,9 +16,12 @@ export const createParser = () => {
   let helpers = {
     partialValue: [""],
     isAfterColon: false,
+    isInsideUnicode: false,
+    isInsideEscape: false,
     isInsideString: false,
     isInsideNumber: false,
     isInsideBooleanOrNull: false,
+    accumulatedUnicode: "",
     accumulatedString: "",
     accumulatedNumber: "",
     accumulatedBooleanOrNull: "",
@@ -52,7 +55,6 @@ export const createParser = () => {
   }
 
   function cloneTabs() {
-    let i = 0;
     const tabWidth = getTabs(helpers.scopes) * 20;
 
     const cloneTab = tabImageNode.cloneNode(true);
@@ -62,7 +64,8 @@ export const createParser = () => {
   }
 
   function getTabs(scopes) {
-    const subTabs = scopes[0].type === "object" ? 1 : 0;
+    const fstScopeType = scopes[0]?.type;
+    const subTabs = fstScopeType === "object" ? 1 : 0;
 
     return scopes.length - subTabs;
   }
@@ -73,12 +76,66 @@ export const createParser = () => {
     while (i < text.length) {
       let char = text[i];
 
+      // escaped chars
+      if (helpers.isInsideEscape) {
+        if (char === "\\" || char === '"') {
+          helpers.isInsideEscape = false;
+          helpers.accumulatedString += char;
+        } else if (char === "u") {
+          helpers.isInsideEscape = false;
+          helpers.isInsideUnicode = true;
+          helpers.accumulatedUnicode = "";
+        } else {
+          helpers.isInsideEscape = false;
+          helpers.accumulatedString += "\\" + char;
+        }
+        i++;
+        continue;
+      }
+
+      // unicode chars
+      if (helpers.isInsideUnicode) {
+        const charCode = char.charCodeAt(0);
+        // from 0 to 9, a to f and A to F
+        console.log("opa, unicode", char, charCode);
+        if (
+          (charCode >= 48 && charCode <= 57) ||
+          (charCode >= 65 && charCode <= 70) ||
+          (charCode >= 97 && charCode <= 102)
+        ) {
+          helpers.accumulatedUnicode += char;
+          if (helpers.accumulatedUnicode.length === 4) {
+            helpers.isInsideUnicode = false;
+            console.log("UNICODE >>> ", helpers.accumulatedUnicode);
+            helpers.accumulatedString += String.fromCharCode(
+              parseInt(helpers.accumulatedUnicode, 16)
+            );
+          }
+          i++;
+          continue;
+        } else {
+          helpers.isInsideUnicode = false;
+          helpers.accumulatedString += "\\u" + helpers.accumulatedUnicode;
+        }
+      }
+
+      // normal run
+
       if (char === "{") {
         if (!helpers.isInsideString) {
           // se não tiver no meio de uma string
           helpers.isAfterColon = false;
 
           console.log("abrir object");
+
+          if (helpers.scopes.at(-1)?.type === "array") {
+            console.log("OBJECT_IN_ARRAY");
+            cloneTabs();
+            vdom.appendChild(
+              createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
+            );
+          }
+
           putLineToDom();
         }
         helpers.scopes.push({ type: "object", index: 0 });
@@ -86,13 +143,19 @@ export const createParser = () => {
         if (!helpers.isInsideString) {
           console.log("abrir array");
 
-          if (helpers.scopes.at(-1).type === "object") {
+          if (helpers.scopes.length === 0) {
+            cloneToVdom(openBracketNode);
+          } else if (helpers.scopes.at(-1)?.type === "object") {
+            // O escopo é objeto quando o [ é aberto
             console.log("ARRAY_IN_OBJECT");
             cloneToVdom(openBracketNode);
             cloneToVdom(breakNode);
-          } else if (helpers.scopes.at(-1).type === "array") {
+          } else if (helpers.scopes.at(-1)?.type === "array") {
             console.log("ARRAY_IN_ARRAY");
             cloneTabs();
+            vdom.appendChild(
+              createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
+            );
             cloneToVdom(openBracketNode);
             cloneToVdom(breakNode);
           }
@@ -149,6 +212,9 @@ export const createParser = () => {
         } else {
           helpers.scopes.pop();
         }
+      } else if (char === "\\") {
+        console.log("proximo caractere PODERÁ SER escapado");
+        helpers.isInsideEscape = true;
       } else if (char === ":") {
         helpers.isAfterColon = true;
         if (!helpers.isInsideString) {
@@ -158,9 +224,8 @@ export const createParser = () => {
         }
         // se não tiver no meio de uma string
       } else if (char === ",") {
-        helpers.isAfterColon = false;
-
         if (!helpers.isInsideString) {
+          helpers.isAfterColon = false;
           // aumentar o index caso o virgula indique um novo item de array
           // if (helpers.scopes.at(-1).type === "array") {
           //   helpers.scopes.at(-1).index++;
@@ -215,6 +280,8 @@ export const createParser = () => {
           }
           console.log("virgula");
           putLineToDom();
+        } else {
+          helpers.accumulatedString += char;
         }
         // se não tiver no meio de uma string
       } else if (char === '"') {

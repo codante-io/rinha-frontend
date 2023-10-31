@@ -13,6 +13,8 @@
 
       #output {
         white-space: nowrap;
+        width: 640px;
+        margin: auto;
       }
 
       #output span {
@@ -22,8 +24,6 @@
 
       .orange {
         color: #f2cab8;
-      }
-      .string {
       }
       .key {
         color: #4e9590;
@@ -44,6 +44,13 @@
         background-image: url("./tae.gif");
         height: 26px;
         margin: 0 0 -9px;
+      }
+
+      #filename {
+        font-size: 32px;
+        font-weight: bold;
+        width: 640px;
+        margin: 24px auto 10px;
       }
     </style>
     <script src="./src/js/index.js" type="module"></script>
@@ -85,6 +92,7 @@
       </button>
     </div>
 
+    <div id="filename"></div>
     <div id="output"></div>
     <script>
       function escolherArquivo() {

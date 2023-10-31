@@ -1,4 +1,4 @@
-export function measure(name) {
+export function measure(name, { willAlert = false }) {
   const startTime = performance.now();
 
   return {
