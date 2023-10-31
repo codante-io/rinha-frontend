@@ -26,6 +26,7 @@ export const createParser = () => {
     accumulatedNumber: "",
     accumulatedBooleanOrNull: "",
     scopes: [],
+    thisLineElement: undefined,
   };
   let vdom = document.createDocumentFragment();
   const output = document.getElementById("output");
@@ -36,6 +37,8 @@ export const createParser = () => {
     line.appendChild(vdom);
     vdom = document.createDocumentFragment();
     output.appendChild(line);
+
+    return line;
   }
 
   function cloneToVdom(node) {
@@ -59,6 +62,15 @@ export const createParser = () => {
 
     const cloneTab = tabImageNode.cloneNode(true);
     cloneTab.style.width = tabWidth + "px";
+
+    vdom.appendChild(cloneTab);
+  }
+
+  function cloneTabsNew() {
+    const tabWidth = getTabs(helpers.scopes) * 20;
+    helpers.thisLineElement.style.marginLeft = tabWidth + "px";
+
+    //add a pseudoElement with the width of the tabWidth, to thisLineElement
 
     vdom.appendChild(cloneTab);
   }
@@ -136,7 +148,7 @@ export const createParser = () => {
             );
           }
 
-          putLineToDom();
+          helpers.thisLineElement = putLineToDom();
         }
         helpers.scopes.push({ type: "object", index: 0 });
       } else if (char === "[") {
@@ -159,7 +171,7 @@ export const createParser = () => {
             cloneToVdom(openBracketNode);
             cloneToVdom(breakNode);
           }
-          putLineToDom();
+          helpers.thisLineElement = putLineToDom();
         }
         // se não tiver no meio de uma string...
         helpers.scopes.push({ type: "array", index: 0 });
@@ -206,7 +218,7 @@ export const createParser = () => {
 
           console.log("fechar array");
           helpers.scopes.pop();
-          putLineToDom();
+          helpers.thisLineElement = putLineToDom();
           cloneTabs();
           cloneToVdom(closeBracketNode);
         } else {
@@ -279,7 +291,7 @@ export const createParser = () => {
             helpers.scopes.at(-1).index++;
           }
           console.log("virgula");
-          putLineToDom();
+          helpers.thisLineElement = putLineToDom();
         } else {
           helpers.accumulatedString += char;
         }
@@ -366,7 +378,7 @@ export const createParser = () => {
     }
 
     if (done) {
-      putLineToDom();
+      helpers.thisLineElement = putLineToDom();
     }
   };
 };
