@@ -5,7 +5,6 @@ let openFirstChunks;
 const image = new Image();
 image.src = "../../../tae.gif";
 
-// console.log = () => {};
 document.addEventListener("DOMContentLoaded", function () {
   let inputFile = document.getElementById("arquivo");
   let initialBlock = document.getElementById("index");

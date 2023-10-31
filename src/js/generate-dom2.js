@@ -8,8 +8,6 @@ import {
   closeBracketNode,
   colonNode,
   openBracketNode,
-  tabImageNode,
-  tabNode,
 } from "./domgen/nodes";
 
 export const createParser = () => {
@@ -26,7 +24,6 @@ export const createParser = () => {
     accumulatedNumber: "",
     accumulatedBooleanOrNull: "",
     scopes: [],
-    thisLineElement: undefined,
   };
   let vdom = document.createDocumentFragment();
   const output = document.getElementById("output");
@@ -36,6 +33,9 @@ export const createParser = () => {
     line.className = "line";
     line.appendChild(vdom);
     vdom = document.createDocumentFragment();
+    const tabWidth = getTabs(helpers.scopes) * 20;
+    line.style.gridTemplateColumns = `${tabWidth}px auto`;
+    console.table(helpers.scopes);
     output.appendChild(line);
 
     return line;
@@ -47,33 +47,29 @@ export const createParser = () => {
     vdom.appendChild(clonedNode);
   }
 
-  function cloneTabsOld() {
-    let i = 0;
-    const tabs = getTabs(helpers.scopes);
-    while (i < tabs) {
-      const cloneTab = tabNode.cloneNode(true);
-      vdom.appendChild(cloneTab);
-      i++;
-    }
-  }
+  // function cloneTabsOld() {
+  //   let i = 0;
+  //   const tabs = getTabs(helpers.scopes);
+  //   while (i < tabs) {
+  //     const cloneTab = tabNode.cloneNode(true);
+  //     vdom.appendChild(cloneTab);
+  //     i++;
+  //   }
+  // }
 
-  function cloneTabs() {
-    const tabWidth = getTabs(helpers.scopes) * 20;
+  // function cloneTabsOld() {
+  //   const tabWidth = getTabs(helpers.scopes) * 20;
 
-    const cloneTab = tabImageNode.cloneNode(true);
-    cloneTab.style.width = tabWidth + "px";
+  //   const cloneTab = tabImageNode.cloneNode(true);
+  //   cloneTab.style.width = tabWidth + "px";
 
-    vdom.appendChild(cloneTab);
-  }
+  //   vdom.appendChild(cloneTab);
+  // }
 
-  function cloneTabsNew() {
-    const tabWidth = getTabs(helpers.scopes) * 20;
-    helpers.thisLineElement.style.marginLeft = tabWidth + "px";
-
-    //add a pseudoElement with the width of the tabWidth, to thisLineElement
-
-    vdom.appendChild(cloneTab);
-  }
+  // function cloneTabs() {
+  //   const tabWidth = getTabs(helpers.scopes) * 20;
+  //   helpers.thisLineElement.style.gridTemplateColumns = `${tabWidth}px auto`;
+  // }
 
   function getTabs(scopes) {
     const fstScopeType = scopes[0]?.type;
@@ -142,13 +138,13 @@ export const createParser = () => {
 
           if (helpers.scopes.at(-1)?.type === "array") {
             console.log("OBJECT_IN_ARRAY");
-            cloneTabs();
+            // cloneTabs();
             vdom.appendChild(
               createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
             );
           }
 
-          helpers.thisLineElement = putLineToDom();
+          putLineToDom();
         }
         helpers.scopes.push({ type: "object", index: 0 });
       } else if (char === "[") {
@@ -164,14 +160,14 @@ export const createParser = () => {
             cloneToVdom(breakNode);
           } else if (helpers.scopes.at(-1)?.type === "array") {
             console.log("ARRAY_IN_ARRAY");
-            cloneTabs();
+            // cloneTabs();
             vdom.appendChild(
               createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
             );
             cloneToVdom(openBracketNode);
             cloneToVdom(breakNode);
           }
-          helpers.thisLineElement = putLineToDom();
+          putLineToDom();
         }
         // se não tiver no meio de uma string...
         helpers.scopes.push({ type: "array", index: 0 });
@@ -190,7 +186,7 @@ export const createParser = () => {
               helpers.accumulatedBooleanOrNull,
               "index: " + helpers.scopes.at(-1).index
             );
-            cloneTabs();
+            // cloneTabs();
             vdom.appendChild(
               createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
             );
@@ -207,7 +203,7 @@ export const createParser = () => {
               helpers.accumulatedNumber,
               "index: " + helpers.scopes.at(-1).index
             );
-            cloneTabs();
+            // cloneTabs();
             vdom.appendChild(
               createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
             );
@@ -217,10 +213,11 @@ export const createParser = () => {
           }
 
           console.log("fechar array");
-          helpers.scopes.pop();
-          helpers.thisLineElement = putLineToDom();
-          cloneTabs();
+          putLineToDom();
           cloneToVdom(closeBracketNode);
+          helpers.scopes.pop();
+          putLineToDom();
+          // cloneTabs();
         } else {
           helpers.scopes.pop();
         }
@@ -250,7 +247,7 @@ export const createParser = () => {
                 helpers.accumulatedNumber,
                 "index: " + helpers.scopes.at(-1).index
               );
-              cloneTabs();
+              // cloneTabs();
               vdom.appendChild(
                 createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
               );
@@ -271,7 +268,7 @@ export const createParser = () => {
                 helpers.accumulatedBooleanOrNull,
                 "index: " + helpers.scopes.at(-1).index
               );
-              cloneTabs();
+              // cloneTabs();
               vdom.appendChild(
                 createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
               );
@@ -291,7 +288,7 @@ export const createParser = () => {
             helpers.scopes.at(-1).index++;
           }
           console.log("virgula");
-          helpers.thisLineElement = putLineToDom();
+          putLineToDom();
         } else {
           helpers.accumulatedString += char;
         }
@@ -310,7 +307,7 @@ export const createParser = () => {
                 helpers.accumulatedString,
                 "scope " + helpers.scopes.at(-1).type
               );
-              cloneTabs();
+              // cloneTabs();
               vdom.appendChild(createKeyNode(helpers.accumulatedString));
             } else {
               console.log("STRING >>> ", helpers.accumulatedString);
@@ -326,7 +323,7 @@ export const createParser = () => {
               "index: " + helpers.scopes.at(-1).index,
               "scope: " + helpers.scopes.at(-1).type
             );
-            cloneTabs();
+            // cloneTabs();
             vdom.appendChild(
               createArrayKeyNode(helpers.scopes.at(-1).index + ": ")
             );
@@ -378,7 +375,7 @@ export const createParser = () => {
     }
 
     if (done) {
-      helpers.thisLineElement = putLineToDom();
+      putLineToDom();
     }
   };
 };

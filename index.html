@@ -17,6 +17,20 @@
         margin: auto;
       }
 
+      .line {
+        display: grid;
+        grid-auto-flow: column;
+        justify-content: start;
+        align-content: end;
+      }
+
+      .line::before {
+        content: "";
+        background-image: url(tae.gif);
+        image-rendering: pixelated;
+        height: 100%;
+      }
+
       #output span {
         height: 30px;
         vertical-align: middle;
@@ -31,20 +45,20 @@
       .array-key {
         color: #bfbfbf;
       }
-      .tab {
+      /* .tab {
         display: inline-block;
         width: 20px;
         height: 20px;
         border-left: 1px solid #bfbfbf;
-      }
+      } */
 
-      .tab-img {
+      /* .tab-img {
         image-rendering: pixelated;
         display: inline-block;
         background-image: url("./tae.gif");
         height: 26px;
         margin: 0 0 -9px;
-      }
+      } */
 
       #filename {
         font-size: 32px;
