@@ -3,7 +3,7 @@ import { measure, runAfterFramePaint } from "./measure.js";
 let openFirstChunks;
 
 var throttleTimer;
-const chunkLength = new Uint8Array(1000);
+
 const throttle = (callback, time) => {
   if (throttleTimer) return;
   throttleTimer = true;
@@ -33,6 +33,10 @@ const handleInfiniteScroll = (callback) => {
 const image = new Image();
 image.src = "./tae.gif";
 
+const worker = new Worker(new URL("./worker.js", import.meta.url), {
+  type: "module",
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   let inputFile = document.getElementById("arquivo");
   let initialBlock = document.getElementById("index");
@@ -46,10 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("filename").innerText = file.name;
 
-    (async () => {
-      const fileContentStream = file.stream();
-      await streamToText(fileContentStream);
-    })();
+    streamToText(file);
   });
 
   async function readOne(stream, createParserBeta, length = 3000) {
@@ -60,7 +61,9 @@ document.addEventListener("DOMContentLoaded", function () {
     return done;
   }
 
-  const streamToText = async (blob) => {
+  const streamToText = async (file) => {
+    const blob = file.stream();
+
     let finished = false;
     const readableStream = await blob.getReader({ mode: "byob" });
     const createParserBeta = parserTeste();
@@ -82,10 +85,16 @@ document.addEventListener("DOMContentLoaded", function () {
       })
     );
 
-    // console.log(text.substring(text.length - 6));
-
     runAfterFramePaint(async () => {
       openFirstChunks.finish();
+
+      worker.postMessage(file);
+      worker.onmessage = function (e) {
+        if (e.data === false) {
+          alert("Arquivo inválido");
+          window.location.reload();
+        }
+      };
     });
   };
 });
