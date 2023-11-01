@@ -28,6 +28,8 @@ export const createParser = () => {
   let vdom = document.createDocumentFragment();
   const output = document.getElementById("output");
 
+  const domOps = [];
+
   function putLineToDom() {
     const line = document.createElement("div");
     line.className = "line";
@@ -35,7 +37,8 @@ export const createParser = () => {
     vdom = document.createDocumentFragment();
     const tabWidth = getTabs(helpers.scopes) * 20;
     line.style.gridTemplateColumns = `${tabWidth}px auto`;
-    output.appendChild(line);
+    // output.appendChild(line);
+    domOps.push(line);
 
     return line;
   }
@@ -349,8 +352,16 @@ export const createParser = () => {
       i++;
     }
 
+    for (let i = 0; i < domOps.length; i++) {
+      output.appendChild(domOps[i]);
+    }
+    domOps.length = 0;
+
     if (done) {
       putLineToDom();
+      for (let i = 0; i < domOps.length; i++) {
+        output.appendChild(domOps[i]);
+      }
     }
   };
 };

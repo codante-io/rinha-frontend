@@ -9,6 +9,7 @@ const parser = createParser();
 
 const image = new Image();
 image.src = "./tae.gif";
+document.body.appendChild(image);
 
 const worker = new Worker(new URL("./worker.js", import.meta.url), {
   type: "module",
@@ -77,10 +78,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const { done, value } = await readableStream.read(new Uint8Array(500));
     const text = textDecoder.decode(value);
 
-    parser(text, done);
-
     const fileNameBlock = document.getElementById("filename");
     fileNameBlock.appendChild(document.createTextNode(file.name));
+
+    parser(text, done);
 
     handleInfiniteScroll(() => {
       readOne(readableStream, parser, 500);
