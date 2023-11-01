@@ -9,6 +9,7 @@ import {
   colonNode,
   openBracketNode,
 } from "./domgen/nodes";
+import { measure, runAfterFramePaint } from "./measure";
 
 export const createParser = () => {
   let helpers = {
@@ -351,6 +352,7 @@ export const createParser = () => {
 
       i++;
     }
+    const timeToDom = measure("tempo pra jogar na tela:", { willAlert: false });
 
     for (let i = 0; i < domOps.length; i++) {
       output.appendChild(domOps[i]);
@@ -363,5 +365,8 @@ export const createParser = () => {
         output.appendChild(domOps[i]);
       }
     }
+    runAfterFramePaint(() => {
+      timeToDom.finish();
+    });
   };
 };

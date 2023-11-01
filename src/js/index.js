@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const streamToText = async (file) => {
     const blob = file.stream();
     const readableStream = await blob.getReader({ mode: "byob" });
-    const { done, value } = await readableStream.read(new Uint8Array(700));
+    const { done, value } = await readableStream.read(new Uint8Array(500));
     const text = textDecoder.decode(value);
 
     parser(text, done);
@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fileNameBlock.appendChild(document.createTextNode(file.name));
 
     runAfterFramePaint(async () => {
+      openFirstChunks.finish();
       window.addEventListener("scroll", () =>
         handleInfiniteScroll(async () => {
           if (!finished) {
@@ -83,7 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         })
       );
-      openFirstChunks.finish();
 
       worker.postMessage(file);
       worker.onmessage = function (e) {
