@@ -205,7 +205,7 @@ button3.addEventListener("click", function () {
   let div2 = document.createElement("div");
   div2.className = "tab-img";
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 1000; i++) {
     document.body.appendChild(div2.cloneNode(true));
   }
   runAfterFramePaint(() => {
@@ -221,7 +221,25 @@ button4.addEventListener("click", function () {
   div.style.width = "10px";
   div.style.height = "10px";
 
-  for (let i = 0; i < 32; i++) {
+  for (let i = 0; i < 1000; i++) {
+    document.body.appendChild(div.cloneNode(true));
+  }
+
+  runAfterFramePaint(() => {
+    divComBgInline.finish();
+  });
+});
+
+let button5 = document.getElementById("btn5");
+button5.addEventListener("click", function () {
+  let divComBgInline = measure("div com bg base64");
+  let div = document.createElement("div");
+  div.style =
+    "background-image: url(data:image/gif;base64,R0lGODdhFAABAIABAL+/v////ywAAAAAFAABAAACBQyCqZsFADs=)";
+  div.style.width = "10px";
+  div.style.height = "10px";
+
+  for (let i = 0; i < 1000; i++) {
     document.body.appendChild(div.cloneNode(true));
   }
 
