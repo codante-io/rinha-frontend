@@ -354,9 +354,11 @@ export const createParser = () => {
     }
     const timeToDom = measure("tempo pra jogar na tela:", { willAlert: false });
 
+    const yavdom = document.createDocumentFragment();
     for (let i = 0; i < domOps.length; i++) {
-      output.appendChild(domOps[i]);
+      yavdom.appendChild(domOps[i]);
     }
+    output.appendChild(yavdom);
     domOps.length = 0;
 
     if (done) {
