@@ -76,7 +76,7 @@ const lazy =
     f(...args);
 
 function factorial(n) {
-  let medirFatorial = measure("factorial trampoline");
+  let medirFatorial = measure("factorial trampoline", { willAlert: false });
   const f = lazy((a, n) => (n == 0 ? a : f(n * a, n - 1)));
   const result = trampoline(f(1, n));
   medirFatorial.finish();
@@ -88,7 +88,9 @@ factorial(9999999);
 // traditional factorial
 
 function factorialTrad(n) {
-  let medirFatorialTrad = measure("factorial tradicional");
+  let medirFatorialTrad = measure("factorial tradicional", {
+    willAlert: false,
+  });
   let result = 1;
   for (let i = 2; i <= n; i++) {
     result *= i;
@@ -110,7 +112,9 @@ const trampolineDifferent =
   };
 
 const factorialOtimizado = (n, accumulator = 1) => {
-  let medirFatorialOtimizado = measure("factorial otimizado");
+  let medirFatorialOtimizado = measure("factorial otimizado", {
+    willAlert: false,
+  });
   const factorialHelper = (n, accumulator) => {
     if (n <= 1) {
       return accumulator;
@@ -126,7 +130,7 @@ const factorialOtimizado = (n, accumulator = 1) => {
 factorialOtimizado(9999999);
 
 const somarStrings = (str1) => {
-  let tempoPushStrings = measure("push strings");
+  let tempoPushStrings = measure("push strings", { willAlert: false });
   let result = [];
   for (let i = 0; i < 500000; i++) {
     result.push(str1);
@@ -139,7 +143,7 @@ const somarStrings = (str1) => {
 somarStrings("Opa mano bora testar com 6 p");
 
 const somarStringsTrad = (str1) => {
-  let tempoConcatStrings = measure("concat strings");
+  let tempoConcatStrings = measure("concat strings", { willAlert: false });
   let result = "";
   for (let i = 0; i < 500000; i++) {
     result += str1;
@@ -168,7 +172,7 @@ button.addEventListener("click", function () {
   // }
   //testes de tabs:
 
-  let mondiSpan = measure("span");
+  let mondiSpan = measure("span", { willAlert: false });
   let span = document.createElement("span");
   span.style.borderLeft = "1px solid black";
   span.style.width = "10px";
@@ -184,7 +188,7 @@ button.addEventListener("click", function () {
 
 let button2 = document.getElementById("btn2");
 button2.addEventListener("click", function () {
-  let divComBgInline = measure("div com bg inline");
+  let divComBgInline = measure("div com bg inline", { willAlert: false });
   let div = document.createElement("div");
   div.style = "background-image: url(tae.gif)";
   div.style.width = "10px";
@@ -201,7 +205,7 @@ button2.addEventListener("click", function () {
 
 let button3 = document.getElementById("btn3");
 button3.addEventListener("click", function () {
-  let divComBgClass = measure("div com bg class");
+  let divComBgClass = measure("div com bg class", { willAlert: false });
   let div2 = document.createElement("div");
   div2.className = "tab-img";
 
@@ -215,9 +219,9 @@ button3.addEventListener("click", function () {
 
 let button4 = document.getElementById("btn4");
 button4.addEventListener("click", function () {
-  let divComBgInline = measure("div com bg inline");
+  let divComBgInline = measure("div com bg inline", { willAlert: false });
   let div = document.createElement("div");
-  div.style = "background-image: url(tae.webp)";
+  div.style = "background-image: url(tae.gif)";
   div.style.width = "10px";
   div.style.height = "10px";
 
@@ -232,7 +236,7 @@ button4.addEventListener("click", function () {
 
 let button5 = document.getElementById("btn5");
 button5.addEventListener("click", function () {
-  let divComBgInline = measure("div com bg base64");
+  let divComBgInline = measure("div com bg base64", { willAlert: false });
   let div = document.createElement("div");
   div.style =
     "background-image: url(data:image/gif;base64,R0lGODdhFAABAIABAL+/v////ywAAAAAFAABAAACBQyCqZsFADs=)";
@@ -245,5 +249,64 @@ button5.addEventListener("click", function () {
 
   runAfterFramePaint(() => {
     divComBgInline.finish();
+  });
+});
+
+let button6 = document.getElementById("btn6");
+button6.addEventListener("click", function () {
+  const testeDiv = document.createElement("div");
+  testeDiv.innerHTML =
+    '<span class="key">type</span><span class="orange">: </span><span class="string">"FeatureCollection"</span>';
+  const timeToDom = measure("tempo pra jogar na tela:", { willAlert: false });
+
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+  output.appendChild(testeDiv.cloneNode(true));
+
+  // for (let i = 0; i < 1000; i++) {
+  //   document.body.appendChild(div.cloneNode(true));
+  // }
+
+  runAfterFramePaint(() => {
+    timeToDom.finish();
   });
 });

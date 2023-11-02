@@ -12,6 +12,44 @@
         height: 26px;
         margin: 0 0 -9px;
       }
+      body {
+        font-family: Inter, sans-serif;
+      }
+
+      #output {
+        white-space: nowrap;
+        width: 640px;
+        margin: auto;
+      }
+
+      .line {
+        display: grid;
+        grid-auto-flow: column;
+        justify-content: start;
+        align-content: end;
+      }
+
+      .line::before {
+        content: "";
+        background-image: url(data:image/gif;base64,R0lGODdhFAABAIABAL+/v////ywAAAAAFAABAAACBQyCqZsFADs=);
+        image-rendering: pixelated;
+        height: 100%;
+      }
+
+      #output span {
+        height: 30px;
+        vertical-align: middle;
+      }
+
+      .orange {
+        color: #f2cab8;
+      }
+      .key {
+        color: #4e9590;
+      }
+      .array-key {
+        color: #bfbfbf;
+      }
     </style>
     <script src="./src/js/domTest.js" type="module"></script>
   </head>
@@ -23,5 +61,8 @@
     <button id="btn3">Com div class bg</button>
     <button id="btn4">Com div inline bg webp</button>
     <button id="btn5">Com div inline bg webp</button>
+    <button id="btn6">Teste render identico separado</button>
+
+    <div id="output"></div>
   </body>
 </html>
