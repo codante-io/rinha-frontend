@@ -13,7 +13,7 @@ import { measure, runAfterFramePaint } from "./measure";
 
 export const createParser = () => {
   let helpers = {
-    partialValue: [""],
+    partialValue: "",
     isAfterColon: false,
     isInsideUnicode: false,
     isInsideEscape: false,
@@ -25,6 +25,7 @@ export const createParser = () => {
     accumulatedNumber: "",
     accumulatedBooleanOrNull: "",
     scopes: [],
+    isFirstChunk: true,
   };
   let vdom = document.createDocumentFragment();
   const output = document.getElementById("output");
@@ -57,12 +58,13 @@ export const createParser = () => {
     return scopes.length - subTabs;
   }
 
-  return (text, done) => {
+  return (text, done, height) => {
     let i = 0;
+    let maxHeight = height / 30;
+    text = helpers.partialValue + text;
 
     while (i < text.length) {
       let char = text[i];
-
       // escaped chars
       if (helpers.isInsideEscape) {
         if (char === "\\" || char === '"') {
@@ -349,9 +351,17 @@ export const createParser = () => {
         helpers.isInsideBooleanOrNull = true;
         helpers.accumulatedBooleanOrNull += char;
       }
-
+      if (domOps.length >= maxHeight + 10 && helpers.isFirstChunk) {
+        helpers.partialValue = text.slice(i + 1);
+        // console.log(text[i - 2], text[i - 1], text[i]);
+        // console.log(helpers.partialValue);
+        break;
+      } else {
+        helpers.partialValue = "";
+      }
       i++;
     }
+    helpers.isFirstChunk = false;
     const timeToDom = measure("tempo pra jogar na tela:", { willAlert: false });
 
     const yavdom = document.createDocumentFragment();

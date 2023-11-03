@@ -9,7 +9,7 @@ const parser = createParser();
 const fileNameBlock = document.getElementById("filename");
 const image = new Image();
 image.src = "./tae.gif";
-
+const height = window.innerHeight;
 const worker = new Worker(new URL("./worker.js", import.meta.url), {
   type: "module",
 });
@@ -28,15 +28,17 @@ const handleInfiniteScroll = (callback) => {
     window.innerHeight + window.scrollY >= document.body.offsetHeight;
 
   if (endOfPage) {
-    console.log("end of page");
-    callback();
+    throttle(() => callback(), 10);
   }
 };
+
+document.addEventListener("resize", () => {
+  height = window.innerHeight;
+});
 
 document.addEventListener("DOMContentLoaded", function () {
   const initialBlock = document.getElementById("index");
   const errorBlock = document.getElementById("error");
-
   if (this.location.hash === "#error") {
     errorBlock.style.display = "block";
     this.location.hash = "";
@@ -45,9 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const inputFile = document.getElementById("arquivo");
 
   inputFile.addEventListener("change", function (e) {
-    initialBlock.style.display = "none";
-    errorBlock.style.display = "none";
-
     openFirstChunks = measure("paint first chunks", { willAlert: false });
 
     /** @type {File} */
@@ -56,46 +55,35 @@ document.addEventListener("DOMContentLoaded", function () {
     streamToText(file);
   });
 
-  async function readOne(stream, createParserBeta, length = 3000) {
+  async function readOne(stream, length = 3000) {
     const { done, value } = await stream.read(new Uint8Array(length));
     const text = textDecoder.decode(value);
 
-    createParserBeta(text, done);
+    parser(text, done, height);
     return done;
   }
 
-  const bufferSize = 500;
-  let readOffset = 0;
-
-  /**
-   * @param {File} file
-   */
   const streamToText = async (file) => {
-    // const blob = file.stream();
-    // const readableStream = await blob.getReader({ mode: "byob" });
-    // const { done, value } = await readableStream.read(new Uint8Array(500));
-    // const text = textDecoder.decode(value);
+    const blob = file.stream();
+    const readableStream = await blob.getReader({ mode: "byob" });
+    const { done, value } = await readableStream.read(new Uint8Array(1500));
+    const text = textDecoder.decode(value);
 
-    const fsize = file.size;
-    const done = readOffset + bufferSize >= fsize;
-    const text = await file.slice(readOffset, bufferSize).text();
-
-    readOffset += bufferSize;
-
-    parser(text, done);
-
+    parser(text, done, height);
+    initialBlock.style.display = "none";
+    errorBlock.style.display = "none";
     fileNameBlock.appendChild(document.createTextNode(file.name));
 
     runAfterFramePaint(async () => {
       openFirstChunks.finish();
-      // window.addEventListener("scroll", () =>
-      //   handleInfiniteScroll(async () => {
-      //     if (!finished) {
-      //       let done = await readOne(readableStream, parser);
-      //       finished = done;
-      //     }
-      //   })
-      // );
+      window.addEventListener("scroll", () =>
+        handleInfiniteScroll(async () => {
+          if (!finished) {
+            let done = await readOne(readableStream);
+            finished = done;
+          }
+        })
+      );
 
       worker.postMessage(file);
       worker.onmessage = function (e) {
