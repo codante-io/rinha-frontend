@@ -1,0 +1,13 @@
+{
+  "O que temos aqui": {
+    "um cavalo de 3 pernas?!": [
+      {
+        "barbaridade, tem numeros tambem": {
+          "um numero": 3,
+          "e um array de numeros": [1, 2, 3, 4, 5],
+          "e um texto": "olha que legal"
+        }
+      }
+    ]
+  }
+}

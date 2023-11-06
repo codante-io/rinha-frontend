@@ -153,11 +153,13 @@ export const createParser = () => {
         // se não tiver no meio de uma string...
         helpers.scopes.push({ type: "array", index: 0 });
       } else if (char === "}") {
-        //se não tiver no meio de uma string
         if (!helpers.isInsideString) {
-          // console.log("fechar object");
+          // se estiver no meio de um objeto
+          if (helpers.scopes.at(-1)?.type === "object") {
+            putLineToDom();
+            helpers.scopes.pop();
+          }
         }
-        helpers.scopes.pop();
       } else if (char === "]") {
         if (!helpers.isInsideString) {
           if (helpers.isInsideBooleanOrNull) {
@@ -192,7 +194,6 @@ export const createParser = () => {
             helpers.accumulatedNumber = "";
             helpers.isInsideNumber = false;
           }
-
           // console.log("fechar array");
           putLineToDom();
           cloneToVdom(closeBracketNode);
