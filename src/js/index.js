@@ -9,7 +9,7 @@ const parser = createParser();
 const fileNameBlock = document.getElementById("filename");
 const image = new Image();
 image.src = "./tae.gif";
-const height = window.innerHeight;
+let height = window.innerHeight;
 const worker = new Worker(new URL("./worker.js", import.meta.url), {
   type: "module",
 });
