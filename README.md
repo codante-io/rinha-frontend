@@ -4,8 +4,6 @@ Este é o repositório da Rinha de Frontend. Esta é uma brincadeira e um desafi
 
 O desafio consiste em montar um sistema Frontend com a stack que você quiser, e estressá-lo de acordo com as especificações abaixo, simplesmente pra ver o que acontece. Quem tirar a melhor performance nos critérios aqui estabelecidos, vence.
 
-🔗 [Link para participar](https://codante.io/rinha-frontend)
-
 ## O Desafio
 
 Criar uma **"JSON Tree Viewer"**: Um visualizador de JSON que roda _sem backend_, e que seja capaz de carregar um JSON especificado pelo usuário e exibi-lo.
